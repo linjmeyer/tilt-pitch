@@ -41,7 +41,7 @@ gauge_temperature_celcius = Gauge('pitch_temperature_celcius', 'Temperature in c
 gauge_gravity = Gauge('pitch_gravity', 'Gravity of the beer', ['color'])
 #########
 
-def callback(bt_addr, rssi, packet, additional_info):
+def beacon_callback(bt_addr, rssi, packet, additional_info):
     uuid = packet.uuid
     color = color_map.get(uuid)
     if color:
@@ -80,7 +80,7 @@ def get_celcius(temp_f):
 # - minor
 # at least one must be specified.
 print("Starting...")
-scanner = BeaconScanner(callback)
+scanner = BeaconScanner(beacon_callback)
 scanner.start()
 print("  ...started beacon scanner")
 
