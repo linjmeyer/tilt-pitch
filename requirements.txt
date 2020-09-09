@@ -1,0 +1,3 @@
+beacontools[scan]
+enum34
+pybluez
