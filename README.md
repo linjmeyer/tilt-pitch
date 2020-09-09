@@ -8,8 +8,16 @@ The Tilt hardware is impressive, but the Android app, iOS app and TiltPi are clu
 
 # Features
 
-* Webhooks for supporting generic integrations (similar to Tilt's Cloud Logging feature)
-* Prometheus Metrics
+The following features are implemented, planned, or will be investigated in the future:
+
+* [x] Track multiple Tilts at once
+* [x] Prometheus Metrics
+* [ ] InfluxDB Metrics
+* [ ] Multple logging and metric sources simultaneously
+* [ ] Webhooks for supporting generic integrations (similar to Tilt's Cloud Logging feature)
+* [ ] Brewing Cloud Services (Brewstats, Brewer's Friend, etc.)
+* [ ] Google Sheets (using any Google Drive)
+
 
 # Name
 
