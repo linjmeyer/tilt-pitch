@@ -22,21 +22,21 @@ It's an unoffical tradition to name tech projects using nautical terms.  Pitch i
 Prometheus metrics are hosted on port 8000.  For each Tilt the followed Prometheus metrics are created:
 
 ```
-# HELP beacons_received_total Number of beacons received
-# TYPE beacons_received_total counter
-beacons_received_total{color="purple"} 3321.0
+# HELP pitch_beacons_received_total Number of beacons received
+# TYPE pitch_beacons_received_total counter
+pitch_beacons_received_total{color="purple"} 3321.0
 
-# HELP temperature_fahrenheit Temperature in fahrenheit
-# TYPE temperature_fahrenheit gauge
-temperature_fahrenheit{color="purple"} 69.0
+# HELP pitch_temperature_fahrenheit Temperature in fahrenheit
+# TYPE pitch_temperature_fahrenheit gauge
+pitch_temperature_fahrenheit{color="purple"} 69.0
 
-# HELP temperature_celcius Temperature in celcius
-# TYPE temperature_celcius gauge
-temperature_celcius{color="purple"} 21.0
+# HELP pitch_temperature_celcius Temperature in celcius
+# TYPE pitch_temperature_celcius gauge
+pitch_temperature_celcius{color="purple"} 21.0
 
-# HELP gravity Gravity of the beer
-# TYPE gravity gauge
-gravity{color="purple"} 1.035
+# HELP pitch_gravity Gravity of the beer
+# TYPE pitch_gravity gauge
+pitch_gravity{color="purple"} 1.035
 ```
 
 ## Webhook

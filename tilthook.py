@@ -26,10 +26,10 @@ color_map = {
         "a495bb40-c5b1-4b44-b512-1370f02d74de": "purple"
     }
 
-counter_beacons_received = Counter('beacons_received', 'Number of beacons received', ['color'])
-gauge_temperature_fahrenheit = Gauge('temperature_fahrenheit', 'Temperature in fahrenheit', ['color'])
-gauge_temperature_celcius = Gauge('temperature_celcius', 'Temperature in celcius', ['color'])
-gauge_gravity = Gauge('gravity', 'Gravity of the beer', ['color'])
+counter_beacons_received = Counter('pitch_beacons_received', 'Number of beacons received', ['color'])
+gauge_temperature_fahrenheit = Gauge('pitch_temperature_fahrenheit', 'Temperature in fahrenheit', ['color'])
+gauge_temperature_celcius = Gauge('pitch_temperature_celcius', 'Temperature in celcius', ['color'])
+gauge_gravity = Gauge('pitch_gravity', 'Gravity of the beer', ['color'])
 #########
 
 def callback(bt_addr, rssi, packet, additional_info):
