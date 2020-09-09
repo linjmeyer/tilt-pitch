@@ -1,4 +1,5 @@
 import time
+import json
 
 from beacontools import BeaconScanner, IBeaconFilter, IBeaconAdvertisement, parse_packet
 from prometheus_client import start_http_server, Counter, Gauge
@@ -11,15 +12,18 @@ class TiltStatus:
         self.temp_c = get_celcius(temp_f)
         self.gravity = gravity
 
+    def json(self):
+        return json.dumps(self.__dict__)
+
 # statics
 color_map = {
-        "a495bb20-c5b1-4b44-b512-1370f02d74de": "Green",
-        "a495bb30-c5b1-4b44-b512-1370f02d74de": "Black",
-        "a495bb10-c5b1-4b44-b512-1370f02d74de": "Red",
-        "a495bb60-c5b1-4b44-b512-1370f02d74de": "Blue",
-        "a495bb50-c5b1-4b44-b512-1370f02d74de": "Orange",
-        "a495bb70-c5b1-4b44-b512-1370f02d74de": "Pink",
-        "a495bb40-c5b1-4b44-b512-1370f02d74de": "Purple"
+        "a495bb20-c5b1-4b44-b512-1370f02d74de": "green",
+        "a495bb30-c5b1-4b44-b512-1370f02d74de": "black",
+        "a495bb10-c5b1-4b44-b512-1370f02d74de": "red",
+        "a495bb60-c5b1-4b44-b512-1370f02d74de": "blue",
+        "a495bb50-c5b1-4b44-b512-1370f02d74de": "orange",
+        "a495bb70-c5b1-4b44-b512-1370f02d74de": "pink",
+        "a495bb40-c5b1-4b44-b512-1370f02d74de": "purple"
     }
 
 counter_beacons_received = Counter('beacons_received', 'Number of beacons received', ['color'])
@@ -47,9 +51,10 @@ def tilt_metrics(tilt_status: TiltStatus):
 
 def tilt_hooks(tilt_status: TiltStatus):
     print("-------------------------------------------")
-    print("Broadcoast for device: {}".format(tilt_status.color))
-    print("Temperature: {}f ({}c)".format(tilt_status.temp_f, tilt_status.temp_c))
-    print("Gravity: {}".format(tilt_status.gravity))
+    print("Broadcoast for device:   {}".format(tilt_status.color))
+    print("Temperature:             {}f ({}c)".format(tilt_status.temp_f, tilt_status.temp_c))
+    print("Gravity:                 {}".format(tilt_status.gravity))
+    print("Json:                    {}".format(tilt_status.json()))
 
 def get_decimal_gravity(gravity):
     # gravity will be an int like 1035

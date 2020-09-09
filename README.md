@@ -15,27 +15,42 @@ The Tilt hardware is impressive, but the Android app, iOS app and TiltPi are clu
 
 It's an unoffical tradition to name tech projects using nautical terms.  Pitch is a term used to describe the tilting/movement of a ship at sea.  Given pitching is also a brewing term, it seemed like a good fit.
 
-# Metrics
+# Integrations
 
-## Prometheus
+## Prometheus Metrics
 
-For each Tilt the followed Prometheus metrics are created:
+Prometheus metrics are hosted on port 8000.  For each Tilt the followed Prometheus metrics are created:
 
 ```
 # HELP beacons_received_total Number of beacons received
 # TYPE beacons_received_total counter
-beacons_received_total{color="Purple"} 1.0
+beacons_received_total{color="purple"} 3321.0
 
 # HELP temperature_fahrenheit Temperature in fahrenheit
 # TYPE temperature_fahrenheit gauge
-temperature_fahrenheit{color="Purple"} 69.0
+temperature_fahrenheit{color="purple"} 69.0
 
 # HELP temperature_celcius Temperature in celcius
 # TYPE temperature_celcius gauge
-temperature_celcius{color="Purple"} 21.0
+temperature_celcius{color="purple"} 21.0
 
 # HELP gravity Gravity of the beer
 # TYPE gravity gauge
-gravity{color="Purple"} 1.035
+gravity{color="purple"} 1.035
+```
+
+## Webhook
+
+ToDo: Configurable webhooks
+
+Webhook payload format:
+
+```
+{
+    "color": "purple",
+    "temp_f": 69,
+    "temp_c": 21,
+    "gravity": 1.035
+}
 ```
 
