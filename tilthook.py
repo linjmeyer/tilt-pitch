@@ -1,10 +1,15 @@
 import time
-import json
+import jsonpickle
+import socket
 
 from beacontools import BeaconScanner, IBeaconFilter, IBeaconAdvertisement, parse_packet
 from prometheus_client import start_http_server, Counter, Gauge
 
-class TiltStatus:
+class JsonSerialize:
+    def json(self):
+        return jsonpickle.encode(self, unpicklable=False)
+
+class TiltStatus(JsonSerialize):
 
     def __init__(self, color, temp_f, gravity):
         self.color = color
@@ -12,8 +17,12 @@ class TiltStatus:
         self.temp_c = get_celcius(temp_f)
         self.gravity = gravity
 
-    def json(self):
-        return json.dumps(self.__dict__)
+
+class WebhookPayload(JsonSerialize):
+    def __init__(self, tilt: TiltStatus):
+        self.tilt = tilt
+        self.hostname = socket.gethostname()
+
 
 # statics
 color_map = {
@@ -54,7 +63,7 @@ def tilt_hooks(tilt_status: TiltStatus):
     print("Broadcoast for device:   {}".format(tilt_status.color))
     print("Temperature:             {}f ({}c)".format(tilt_status.temp_f, tilt_status.temp_c))
     print("Gravity:                 {}".format(tilt_status.gravity))
-    print("Json:                    {}".format(tilt_status.json()))
+    print("Json:                    {}".format(WebhookPayload(tilt_status).json()))
 
 def get_decimal_gravity(gravity):
     # gravity will be an int like 1035

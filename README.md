@@ -55,10 +55,13 @@ Webhook payload format:
 
 ```
 {
-    "color": "purple",
-    "temp_f": 69,
-    "temp_c": 21,
-    "gravity": 1.035
+    "tilt": {
+        "color": "purple",
+        "temp_f": 69,
+        "temp_c": 21,
+        "gravity": 1.035
+    },
+    "hostname": "tiltpi"
 }
 ```
 
