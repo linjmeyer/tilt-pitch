@@ -1,3 +1,4 @@
 beacontools[scan]
 enum34
 pybluez
+prometheus_client
