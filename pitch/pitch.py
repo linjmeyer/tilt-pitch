@@ -2,7 +2,7 @@ import time
 
 from pyfiglet import Figlet
 from beacontools import BeaconScanner, IBeaconFilter, IBeaconAdvertisement, parse_packet
-from .models import TiltStatus, WebhookPayload
+from .models import TiltStatus
 from .abstractions import CloudProviderBase
 from .providers import PrometheusCloudProvider, WebhookCloudProvider
 from .configuration import PitchConfig
@@ -63,7 +63,7 @@ def beacon_callback(bt_addr, rssi, packet, additional_info):
         for provider in enabled_providers:
             provider.update(tilt_status)
         # Log it to console/stdout
-        print(WebhookPayload(tilt_status).json())
+        print(tilt_status.json())
 
 def get_decimal_gravity(gravity):
     # gravity will be an int like 1035
