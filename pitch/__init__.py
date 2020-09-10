@@ -1,1 +1,1 @@
-from .pitch import beacon_callback
+from .pitch import pitch_main

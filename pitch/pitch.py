@@ -5,7 +5,9 @@ from .models import TiltStatus, WebhookPayload
 from .abstractions import CloudProviderBase
 from .providers import PrometheusCloudProvider
 
-# statics
+#############################################
+# Statics
+#############################################
 color_map = {
         "a495bb20-c5b1-4b44-b512-1370f02d74de": "green",
         "a495bb30-c5b1-4b44-b512-1370f02d74de": "black",
@@ -15,7 +17,31 @@ color_map = {
         "a495bb70-c5b1-4b44-b512-1370f02d74de": "pink",
         "a495bb40-c5b1-4b44-b512-1370f02d74de": "purple"
     }
-#########
+
+all_providers = [
+        PrometheusCloudProvider()
+    ]
+
+enabled_providers = list()
+
+#############################################
+#############################################
+
+def pitch_main():
+    # Start all cloud providers
+    print("Starting cloud providers...")
+    for provider in all_providers:
+        if provider.enabled():
+            enabled_providers.append(provider)
+            provider.start()
+            print("...started: {}".format(provider))
+
+    print("Starting Tilt scanner...")
+    scanner = BeaconScanner(beacon_callback)
+    scanner.start()
+    print("...started Tilt scanner")
+
+    print("Ready!  Listening for beacons")
 
 def beacon_callback(bt_addr, rssi, packet, additional_info):
     uuid = packet.uuid
@@ -25,14 +51,14 @@ def beacon_callback(bt_addr, rssi, packet, additional_info):
         # major = degrees in F (int)
         # minor = gravity (int) - needs to be converted to float (e.g. 1035 -> 1.035)
         tilt_status = TiltStatus(color, packet.major, get_decimal_gravity(packet.minor))
-        tilt_metrics(tilt_status)
-        tilt_hooks(tilt_status)
+        # Update in enabled providers
+        for provider in enabled_providers:
+            provider.log(tilt_status)
+        # Log it to console/stdout
+        console_print_tilt(tilt_status)
 
-def tilt_metrics(tilt_status: TiltStatus):
-    temp = PrometheusCloudProvider()
-    temp.log(tilt_status)
 
-def tilt_hooks(tilt_status: TiltStatus):
+def console_print_tilt(tilt_status: TiltStatus):
     print("-------------------------------------------")
     print("Broadcoast for device:   {}".format(tilt_status.color))
     print("Temperature:             {}f ({}c)".format(tilt_status.temp_f, tilt_status.temp_c))
