@@ -1,0 +1,6 @@
+{
+    "webhook_urls": [
+        "https://httpbin.org/anything?one",
+        "https://httpbin.org/anything?two"
+    ]
+}

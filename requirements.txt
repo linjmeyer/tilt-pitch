@@ -4,3 +4,4 @@ pybluez
 prometheus_client
 jsonpickle
 python-interface
+pyfiglet

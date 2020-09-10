@@ -16,7 +16,7 @@ class PrometheusCloudProvider(implements(CloudProviderBase)):
     def start(self):
         port=8000
         start_http_server(port)
-        print("  ...started metrics server port (127.0.0.1:{}/metrics)".format(port))
+        return "(127.0.0.1:{}/metrics)".format(port)
 
     def update(self, tilt_status: TiltStatus):
         counter_beacons_received.labels(color=tilt_status.color).inc()

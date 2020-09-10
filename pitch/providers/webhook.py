@@ -5,8 +5,12 @@ import requests
 
 class WebhookCloudProvider(implements(CloudProviderBase)):
 
+    def __init__(self, url):
+        self.url = url
+        self.str_name = "Webhook ({})".format(url)
+
     def __str__(self):
-        return "Webhook"
+        return self.str_name
 
     def start(self):
         pass

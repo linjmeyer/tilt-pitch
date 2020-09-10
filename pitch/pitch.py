@@ -1,9 +1,11 @@
 import time
 
+from pyfiglet import Figlet
 from beacontools import BeaconScanner, IBeaconFilter, IBeaconAdvertisement, parse_packet
 from .models import TiltStatus, WebhookPayload
 from .abstractions import CloudProviderBase
 from .providers import PrometheusCloudProvider, WebhookCloudProvider
+from .configuration import PitchConfig
 
 #############################################
 # Statics
@@ -28,19 +30,24 @@ enabled_providers = list()
 #############################################
 
 def pitch_main():
-    # Start all cloud providers
-    add_webhook_providers()
-    print("Starting cloud providers...")
+    start_message()
+    # Load config
+    config = PitchConfig.load()
+    # add any webhooks defined in config
+    add_webhook_providers(config)
+    # Start cloud providers
+    print("Starting...")
     for provider in all_providers:
         if provider.enabled():
             enabled_providers.append(provider)
-            provider.start()
-            print("...started: {}".format(provider))
+            provider_start_message = provider.start()
+            if not provider_start_message:
+                provider_start_message = ''
+            print("...started: {} {}".format(provider, provider_start_message))
 
-    print("Starting Tilt scanner...")
     scanner = BeaconScanner(beacon_callback)
     scanner.start()
-    print("...started Tilt scanner")
+    print("...started: Tilt scanner")
 
     print("Ready!  Listening for beacons")
 
@@ -56,21 +63,19 @@ def beacon_callback(bt_addr, rssi, packet, additional_info):
         for provider in enabled_providers:
             provider.update(tilt_status)
         # Log it to console/stdout
-        console_print_tilt(tilt_status)
-
-def console_print_tilt(tilt_status: TiltStatus):
-    print("-------------------------------------------")
-    print("Broadcoast for device:   {}".format(tilt_status.color))
-    print("Temperature:             {}f ({}c)".format(tilt_status.temp_f, tilt_status.temp_c))
-    print("Gravity:                 {}".format(tilt_status.gravity))
-    print("Json:                    {}".format(WebhookPayload(tilt_status).json()))
+        print(WebhookPayload(tilt_status).json())
 
 def get_decimal_gravity(gravity):
     # gravity will be an int like 1035
     # turn into decimal, like 1.035
     return gravity * .001
 
-def add_webhook_providers():
+def add_webhook_providers(config: PitchConfig):
     # Multiple webhooks can be fired, so create them dynamically and add to
     # all providers static list
-    all_providers.append(WebhookCloudProvider())
+    for url in config.webhook_urls:
+        all_providers.append(WebhookCloudProvider(url))
+
+def start_message():
+    f = Figlet(font='slant')
+    print(f.renderText('Pitch'))
