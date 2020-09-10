@@ -1,28 +1,8 @@
 import time
-import jsonpickle
-import socket
 
 from beacontools import BeaconScanner, IBeaconFilter, IBeaconAdvertisement, parse_packet
-from prometheus_client import start_http_server, Counter, Gauge
-
-class JsonSerialize:
-    def json(self):
-        return jsonpickle.encode(self, unpicklable=False)
-
-class TiltStatus(JsonSerialize):
-
-    def __init__(self, color, temp_f, gravity):
-        self.color = color
-        self.temp_f = temp_f
-        self.temp_c = get_celcius(temp_f)
-        self.gravity = gravity
-
-
-class WebhookPayload(JsonSerialize):
-    def __init__(self, tilt: TiltStatus):
-        self.tilt = tilt
-        self.hostname = socket.gethostname()
-
+from prometheus_client import Counter, Gauge
+from .models import TiltStatus, WebhookPayload
 
 # statics
 color_map = {
@@ -69,21 +49,3 @@ def get_decimal_gravity(gravity):
     # gravity will be an int like 1035
     # turn into decimal, like 1.035
     return gravity * .001
-
-def get_celcius(temp_f):
-    return round((temp_f - 32) * 5.0/9.0)
-
-
-# scan for all iBeacon advertisements from beacons with certain properties:
-# - uuid
-# - major
-# - minor
-# at least one must be specified.
-print("Starting...")
-scanner = BeaconScanner(beacon_callback)
-scanner.start()
-print("  ...started beacon scanner")
-
-port=8000
-start_http_server(port)
-print("  ...started metrics server port (127.0.0.1:{}/metrics)".format(port))
