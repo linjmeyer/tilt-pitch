@@ -53,10 +53,9 @@ def beacon_callback(bt_addr, rssi, packet, additional_info):
         tilt_status = TiltStatus(color, packet.major, get_decimal_gravity(packet.minor))
         # Update in enabled providers
         for provider in enabled_providers:
-            provider.log(tilt_status)
+            provider.update(tilt_status)
         # Log it to console/stdout
         console_print_tilt(tilt_status)
-
 
 def console_print_tilt(tilt_status: TiltStatus):
     print("-------------------------------------------")

@@ -6,7 +6,7 @@ class CloudProviderBase(Interface):
     def start(self):
         pass
 
-    def log(self, tilt_status: TiltStatus):
+    def update(self, tilt_status: TiltStatus):
         pass
 
     def enabled(self):
