@@ -3,3 +3,4 @@ enum34
 pybluez
 prometheus_client
 jsonpickle
+python-interface
