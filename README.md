@@ -4,7 +4,7 @@ Pitch is an unofficial replacement for Tilt Hydrometer mobile apps and TiltPi so
 
 # Why
 
-The Tilt hardware is impressive, but the Android app, iOS app and TiltPi are clunky, confusing and buggy.  This project aims to provide a better more reliable solution, but is focused on more tech-savvy brewers than the official Tilt projects.  
+The Tilt hardware is impressive, but the mobile apps and TiltPi are confusing and buggy.  This project aims to provide a better more reliable solution, but is focused on more tech-savvy brewers than the official Tilt projects.  
 
 # Features
 

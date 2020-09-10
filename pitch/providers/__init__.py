@@ -1,1 +1,2 @@
 from .prometheus import PrometheusCloudProvider
+from .webhook import WebhookCloudProvider

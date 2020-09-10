@@ -19,7 +19,6 @@ class PrometheusCloudProvider(implements(CloudProviderBase)):
         print("  ...started metrics server port (127.0.0.1:{}/metrics)".format(port))
 
     def update(self, tilt_status: TiltStatus):
-        print("Updated Tilt {} for cloud {}".format(tilt_status.color, self))
         counter_beacons_received.labels(color=tilt_status.color).inc()
         gauge_temperature_fahrenheit.labels(color=tilt_status.color).set(tilt_status.temp_f)
         gauge_temperature_celcius.labels(color=tilt_status.color).set(tilt_status.temp_c)

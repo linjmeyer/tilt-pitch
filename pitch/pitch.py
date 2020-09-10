@@ -3,7 +3,7 @@ import time
 from beacontools import BeaconScanner, IBeaconFilter, IBeaconAdvertisement, parse_packet
 from .models import TiltStatus, WebhookPayload
 from .abstractions import CloudProviderBase
-from .providers import PrometheusCloudProvider
+from .providers import PrometheusCloudProvider, WebhookCloudProvider
 
 #############################################
 # Statics
@@ -29,6 +29,7 @@ enabled_providers = list()
 
 def pitch_main():
     # Start all cloud providers
+    add_webhook_providers()
     print("Starting cloud providers...")
     for provider in all_providers:
         if provider.enabled():
@@ -68,3 +69,8 @@ def get_decimal_gravity(gravity):
     # gravity will be an int like 1035
     # turn into decimal, like 1.035
     return gravity * .001
+
+def add_webhook_providers():
+    # Multiple webhooks can be fired, so create them dynamically and add to
+    # all providers static list
+    all_providers.append(WebhookCloudProvider())
