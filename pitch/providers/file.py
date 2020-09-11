@@ -11,18 +11,14 @@ class FileCloudProvider(implements(CloudProviderBase)):
         self.config = config
         self.str_name = "File ({})".format(config.log_file_path)
         self.logger = logging.getLogger(self.str_name)
-        self.setup_logger()
-
-    def setup_logger(self):
-        maxBytes = self.config.log_file_max_mb * 1024 * 1024
-        handler = logging.handlers.RotatingFileHandler(self.config.log_file_path, maxBytes=maxBytes)
-        self.logger.addHandler(handler)
 
     def __str__(self):
         return self.str_name
 
     def start(self):
-        pass
+        maxBytes = self.config.log_file_max_mb * 1024 * 1024
+        handler = logging.handlers.RotatingFileHandler(self.config.log_file_path, maxBytes=maxBytes)
+        self.logger.addHandler(handler)
 
     def update(self, tilt_status: TiltStatus):
         self.logger.warning(tilt_status.json())
