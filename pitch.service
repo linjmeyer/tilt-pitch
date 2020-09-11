@@ -1,0 +1,17 @@
+# Example systemd service file
+######################################
+
+[Unit]
+Description=Pitch
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 -m pitch
+WorkingDirectory=/home/pi/tilt-hook/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
