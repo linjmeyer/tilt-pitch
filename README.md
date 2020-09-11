@@ -24,6 +24,17 @@ The following features are implemented, planned, or will be investigated in the 
 
 It's an unoffical tradition to name tech projects using nautical terms.  Pitch is a term used to describe the tilting/movement of a ship at sea.  Given pitching is also a brewing term, it seemed like a good fit.
 
+# Configuration
+
+Custom configurations can be used by creating a file `pitch.json` in the wording directory you are running Pitch from.
+
+| Option                       | Purpose                      | Default               |
+| ---------------------------- |:----------------------------:| ---------------------:|
+| webhook_urls (array) | Adds webhook URLs for Tilt status updates | None/empty |
+| log_file_path (str) | Path to file for JSON event logging | `pitch_log.json` |
+| log_file_max_mb (int) | Max JSON log file size in megabytes | 10 |
+
+
 # Integrations
 
 ## Prometheus Metrics

@@ -6,7 +6,7 @@ class PitchConfig:
         # Webhook
         self.webhook_urls = list()
         # File Path
-        self.log_file_path = None
+        self.log_file_path = pitch_log.json
         self.log_file_max_mb = 10
         # Load user inputs from config file
         self.__dict__.update(data)
