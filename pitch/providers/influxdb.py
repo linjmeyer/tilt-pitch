@@ -8,9 +8,10 @@ class InfluxDbCloudProvider(implements(CloudProviderBase)):
 
     def __init__(self, config: PitchConfig):
         self.config = config
+        self.str_name = "InfluxDb ({}:{})".format(config.influxdb_hostname,config.influxdb_port)
 
     def __str__(self):
-        return "InfluxDb"
+        return self.str_name
 
     def start(self):
         self.client = InfluxDBClient(self.config.influxdb_hostname, 
