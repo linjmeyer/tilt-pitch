@@ -26,7 +26,7 @@ It's an unoffical tradition to name tech projects using nautical terms.  Pitch i
 
 # Configuration
 
-Custom configurations can be used by creating a file `pitch.json` in the wording directory you are running Pitch from.
+Custom configurations can be used by creating a file `pitch.json` in the working directory you are running Pitch from.
 
 | Option                       | Purpose                      | Default               |
 | ---------------------------- | ---------------------------- | --------------------- |
