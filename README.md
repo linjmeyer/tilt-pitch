@@ -35,6 +35,12 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | `log_file_max_mb` (int) | Max JSON log file size in megabytes | `10` |
 | `prometheus_enabled` (bool) | Enable/Disable Prometheus metrics | `true` |
 | `prometheus_port` (int) | Port number for Prometheus Metrics | `8000` |
+| `influxdb_hostname` (str) | Hostname for InfluxDB database | None/empty |
+| `influxdb_port` (int) | Port for InfluxDB database | None/empty |
+| `influxdb_database` (str) | Name of InfluxDB database | None/empty |
+| `influxdb_username` (str) | Username for InfluxDB | None/empty |
+| `influxdb_batch_size` (int) | Number of events to batch | `10` |
+| `influxdb_timeout_seconds` (int) | Timeout of InfluxDB reads/writes | `5` |
 
 
 # Integrations

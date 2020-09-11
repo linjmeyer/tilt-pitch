@@ -4,7 +4,7 @@ from pyfiglet import Figlet
 from beacontools import BeaconScanner, IBeaconFilter, IBeaconAdvertisement, parse_packet
 from .models import TiltStatus
 from .abstractions import CloudProviderBase
-from .providers import PrometheusCloudProvider, WebhookCloudProvider, FileCloudProvider
+from .providers import PrometheusCloudProvider, WebhookCloudProvider, FileCloudProvider, InfluxDbCloudProvider
 from .configuration import PitchConfig
 
 #############################################
@@ -25,7 +25,8 @@ config = PitchConfig.load()
 
 all_providers = [
         PrometheusCloudProvider(config),
-        FileCloudProvider(config)
+        FileCloudProvider(config),
+        InfluxDbCloudProvider(config)
     ]
 
 enabled_providers = list()
