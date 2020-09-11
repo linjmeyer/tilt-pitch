@@ -95,3 +95,9 @@ Tilt status broadcast events can be logged to a json file using the config optio
 {"timestamp": "2020-09-11T02:15:36.562158", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.996}
 ```
 
+# Examples
+
+See the examples directory for:
+
+* InfluxDB Grafana Dashboard
+* Running Pitch as a systemd service
