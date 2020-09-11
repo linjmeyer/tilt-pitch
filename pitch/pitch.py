@@ -4,7 +4,7 @@ from pyfiglet import Figlet
 from beacontools import BeaconScanner, IBeaconFilter, IBeaconAdvertisement, parse_packet
 from .models import TiltStatus
 from .abstractions import CloudProviderBase
-from .providers import PrometheusCloudProvider, WebhookCloudProvider
+from .providers import PrometheusCloudProvider, WebhookCloudProvider, FileCloudProvider
 from .configuration import PitchConfig
 
 #############################################
@@ -20,8 +20,12 @@ color_map = {
         "a495bb40-c5b1-4b44-b512-1370f02d74de": "purple"
     }
 
+# Load config
+config = PitchConfig.load()
+
 all_providers = [
-        PrometheusCloudProvider()
+        PrometheusCloudProvider(),
+        FileCloudProvider(config)
     ]
 
 enabled_providers = list()
@@ -31,8 +35,6 @@ enabled_providers = list()
 
 def pitch_main():
     start_message()
-    # Load config
-    config = PitchConfig.load()
     # add any webhooks defined in config
     add_webhook_providers(config)
     # Start cloud providers

@@ -12,6 +12,7 @@ The following features are implemented, planned, or will be investigated in the 
 
 * [x] Track multiple Tilts at once
 * [x] Prometheus Metrics
+* [x] Tilt status log file (JSON)
 * [ ] InfluxDB Metrics
 * [ ] Multple logging and metric sources simultaneously
 * [ ] Webhooks for supporting generic integrations (similar to Tilt's Cloud Logging feature)
@@ -49,19 +50,29 @@ pitch_gravity{color="purple"} 1.035
 
 ## Webhook
 
-ToDo: Configurable webhooks
+Unlimited webhooks can be configured using the config option `webhook_urls`.  Each Tilt status broadcast will result in a webhook call to all URLs.
 
-Webhook payload format:
+Webhooks are sent as HTTP POST with the following json payload:
 
 ```
 {
-    "tilt": {
-        "color": "purple",
-        "temp_f": 69,
-        "temp_c": 21,
-        "gravity": 1.035
-    },
-    "hostname": "tiltpi"
+    "color": "purple",
+    "temp_f": 69,
+    "temp_c": 21,
+    "gravity": 1.035
 }
+```
+
+## JSON Log File
+
+Tilt status broadcast events can be logged to a json file using the config option `log_file_path`.  Each event is a newline.  Example file:
+
+```
+{"timestamp": "2020-09-11T02:15:30.525232", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997}
+{"timestamp": "2020-09-11T02:15:32.539619", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997}
+{"timestamp": "2020-09-11T02:15:33.545388", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997}
+{"timestamp": "2020-09-11T02:15:34.548556", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997}
+{"timestamp": "2020-09-11T02:15:35.557411", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997}
+{"timestamp": "2020-09-11T02:15:36.562158", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.996}
 ```
 
