@@ -3,5 +3,6 @@
         "https://httpbin.org/anything?one",
         "https://httpbin.org/anything?two"
     ],
-    "log_file_path": "pitch_log.json"
+    "log_file_path": "pitch_log.json",
+    "prometheus_enabled": true
 }

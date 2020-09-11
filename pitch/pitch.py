@@ -24,7 +24,7 @@ color_map = {
 config = PitchConfig.load()
 
 all_providers = [
-        PrometheusCloudProvider(),
+        PrometheusCloudProvider(config),
         FileCloudProvider(config)
     ]
 

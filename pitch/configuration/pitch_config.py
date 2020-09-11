@@ -6,8 +6,11 @@ class PitchConfig:
         # Webhook
         self.webhook_urls = list()
         # File Path
-        self.log_file_path = pitch_log.json
+        self.log_file_path = 'pitch_log.json'
         self.log_file_max_mb = 10
+        # Prometheus
+        self.prometheus_enabled = True
+        self.prometheus_port = 8000
         # Load user inputs from config file
         self.__dict__.update(data)
 

@@ -32,7 +32,9 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | ---------------------------- | ---------------------------- | --------------------- |
 | `webhook_urls` (array) | Adds webhook URLs for Tilt status updates | None/empty |
 | `log_file_path` (str) | Path to file for JSON event logging | `pitch_log.json` |
-| `log_file_max_mb` (int) | Max JSON log file size in megabytes | 10 |
+| `log_file_max_mb` (int) | Max JSON log file size in megabytes | `10` |
+| `prometheus_enabled` (bool) | Enable/Disable Prometheus metrics | `true` |
+| `prometheus_port` (int) | Port number for Prometheus Metrics | `8000` |
 
 
 # Integrations

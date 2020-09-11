@@ -1,5 +1,6 @@
 from ..models import TiltStatus
 from ..abstractions import CloudProviderBase
+from ..configuration import PitchConfig
 from interface import implements
 from prometheus_client import Counter, Gauge, start_http_server
 
@@ -10,13 +11,16 @@ gauge_gravity = Gauge('pitch_gravity', 'Gravity of the beer', ['color'])
 
 class PrometheusCloudProvider(implements(CloudProviderBase)):
 
+    def __init__(self, config: PitchConfig):
+        self.is_enabled = config.prometheus_enabled
+        self.port = config.prometheus_port
+
     def __str__(self):
         return "Prometheus"
 
     def start(self):
-        port=8000
-        start_http_server(port)
-        return "(127.0.0.1:{}/metrics)".format(port)
+        start_http_server(self.port)
+        return "(127.0.0.1:{}/metrics)".format(self.port)
 
     def update(self, tilt_status: TiltStatus):
         counter_beacons_received.labels(color=tilt_status.color).inc()
@@ -25,4 +29,4 @@ class PrometheusCloudProvider(implements(CloudProviderBase)):
         gauge_gravity.labels(color=tilt_status.color).set(tilt_status.gravity)
 
     def enabled(self):
-        return True
+        return self.is_enabled
