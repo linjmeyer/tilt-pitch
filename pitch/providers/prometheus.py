@@ -8,6 +8,8 @@ counter_beacons_received = Counter('pitch_beacons_received', 'Number of beacons 
 gauge_temperature_fahrenheit = Gauge('pitch_temperature_fahrenheit', 'Temperature in fahrenheit', ['color'])
 gauge_temperature_celcius = Gauge('pitch_temperature_celcius', 'Temperature in celcius', ['color'])
 gauge_gravity = Gauge('pitch_gravity', 'Gravity of the beer', ['color'])
+gauge_abv = Gauge('pitch_alcohol_by_volume', 'ABV of the beer', ['color'])
+
 
 class PrometheusCloudProvider(implements(CloudProviderBase)):
 
@@ -27,6 +29,7 @@ class PrometheusCloudProvider(implements(CloudProviderBase)):
         gauge_temperature_fahrenheit.labels(color=tilt_status.color).set(tilt_status.temp_f)
         gauge_temperature_celcius.labels(color=tilt_status.color).set(tilt_status.temp_c)
         gauge_gravity.labels(color=tilt_status.color).set(tilt_status.gravity)
+        gauge_abv.labels(color=tilt_status.color).set(tilt_status.abv)
 
     def enabled(self):
         return self.is_enabled

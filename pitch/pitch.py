@@ -90,7 +90,7 @@ def beacon_callback(bt_addr, rssi, packet, additional_info):
         # iBeacon packets have major/minor attributes with data
         # major = degrees in F (int)
         # minor = gravity (int) - needs to be converted to float (e.g. 1035 -> 1.035)
-        tilt_status = TiltStatus(color, packet.major, get_decimal_gravity(packet.minor))
+        tilt_status = TiltStatus(color, packet.major, get_decimal_gravity(packet.minor), config)
         # Update in enabled providers
         for provider in enabled_providers:
             try:

@@ -66,6 +66,10 @@ pitch_temperature_celcius{color="purple"} 21.0
 # HELP pitch_gravity Gravity of the beer
 # TYPE pitch_gravity gauge
 pitch_gravity{color="purple"} 1.035
+
+# HELP pitch_alcohol_by_volume ABV of the beer
+# TYPE pitch_alcohol_by_volume gauge
+pitch_alcohol_by_volume{color="purple"} 5.63
 ```
 
 ## Webhook
@@ -79,7 +83,8 @@ Webhooks are sent as HTTP POST with the following json payload:
     "color": "purple",
     "temp_f": 69,
     "temp_c": 21,
-    "gravity": 1.035
+    "gravity": 1.035,
+    "abv": 5.63
 }
 ```
 
@@ -88,12 +93,12 @@ Webhooks are sent as HTTP POST with the following json payload:
 Tilt status broadcast events can be logged to a json file using the config option `log_file_path`.  Each event is a newline.  Example file:
 
 ```
-{"timestamp": "2020-09-11T02:15:30.525232", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997}
-{"timestamp": "2020-09-11T02:15:32.539619", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997}
-{"timestamp": "2020-09-11T02:15:33.545388", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997}
-{"timestamp": "2020-09-11T02:15:34.548556", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997}
-{"timestamp": "2020-09-11T02:15:35.557411", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997}
-{"timestamp": "2020-09-11T02:15:36.562158", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.996}
+{"timestamp": "2020-09-11T02:15:30.525232", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997, "abv": 5.63}
+{"timestamp": "2020-09-11T02:15:32.539619", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997, "abv": 5.63}
+{"timestamp": "2020-09-11T02:15:33.545388", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997, "abv": 5.63}
+{"timestamp": "2020-09-11T02:15:34.548556", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997, "abv": 5.63}
+{"timestamp": "2020-09-11T02:15:35.557411", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997, "abv": 5.63}
+{"timestamp": "2020-09-11T02:15:36.562158", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.996, "abv": 5.63}
 ```
 
 ## InfluxDB Metrics
@@ -112,7 +117,8 @@ Each beacon event from a Tilt will create a measurement like this:
     "fields": {
         "temp_f": 70,
         "temp_c": 21,
-        "gravity": 1.035
+        "gravity": 1.035,
+        "abv": 5.63
     }
 }
 ```  

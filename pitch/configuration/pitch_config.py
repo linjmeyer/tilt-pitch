@@ -22,11 +22,20 @@ class PitchConfig:
         self.influxdb_timeout_seconds = 5
         # Simulations
         self.simulate_beacons = False
+        # OG
+        self.calibrations = dict()
         # Load user inputs from config file
         self.update(data)
 
     def update(self, data: dict):
         self.__dict__.update(data)
+
+    def get_calibration(self, color: str):
+        return self.calibrations.get(color, dict())
+
+    def get_original_gravity(self, color: str):
+        return self.get_calibration(color).get('original_gravity')
+
 
     @staticmethod
     def load(additional_config: dict = None):
