@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1599933364760,
+  "iteration": 1599937837177,
   "links": [],
   "panels": [
     {
@@ -258,7 +258,7 @@
             [
               {
                 "params": [
-                  "temp_f"
+                  "temp_fahrenheit"
                 ],
                 "type": "field"
               },
@@ -360,6 +360,13 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
+      "scopedVars": {
+        "color": {
+          "selected": false,
+          "text": "purple",
+          "value": "purple"
+        }
+      },
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -390,7 +397,7 @@
             [
               {
                 "params": [
-                  "abv"
+                  "alcohol_by_volume"
                 ],
                 "type": "field"
               },
@@ -492,6 +499,13 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
+      "scopedVars": {
+        "color": {
+          "selected": false,
+          "text": "purple",
+          "value": "purple"
+        }
+      },
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -633,7 +647,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -652,5 +666,5 @@
   "timezone": "",
   "title": "Beer!",
   "uid": "SRIwTkigk",
-  "version": 2
+  "version": 4
 }
