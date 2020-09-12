@@ -13,7 +13,6 @@ class TiltStatus(JsonSerialize):
         self.gravity = current_gravity
         self.abv = TiltStatus.get_abv(color, current_gravity, config)
 
-
     @staticmethod
     def get_celcius(temp_f):
         return round((temp_f - 32) * 5.0/9.0)

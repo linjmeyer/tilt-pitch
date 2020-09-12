@@ -3,6 +3,7 @@ from ..abstractions import CloudProviderBase
 from interface import implements
 import requests
 
+
 class WebhookCloudProvider(implements(CloudProviderBase)):
 
     def __init__(self, url):
@@ -16,9 +17,8 @@ class WebhookCloudProvider(implements(CloudProviderBase)):
         pass
 
     def update(self, tilt_status: TiltStatus):
-        url = 'http://httpbin.org/anything'
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-        requests.post(url, data=tilt_status.json())
+        requests.post(self.url, headers=headers, data=tilt_status.json())
 
     def enabled(self):
         return True
