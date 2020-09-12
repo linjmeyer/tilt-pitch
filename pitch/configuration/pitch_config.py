@@ -1,4 +1,5 @@
 import json
+import os
 
 class PitchConfig:
 
@@ -19,14 +20,26 @@ class PitchConfig:
         self.influxdb_password = None
         self.influxdb_batch_size = 10
         self.influxdb_timeout_seconds = 5
+        # Simulations
+        self.simulate_beacons = False
         # Load user inputs from config file
+        self.update(data)
+
+    def update(self, data: dict):
         self.__dict__.update(data)
 
-
     @staticmethod
-    def load():
+    def load(additional_config: dict = None):
         file_path = "pitch.json"
-        file_open = open(file_path, "r").read()
-        config_raw = json.loads(file_open)
-        return PitchConfig(config_raw)
+        config_raw = dict()
+
+        if os.path.isfile(file_path):
+            file_open = open(file_path, "r").read()
+            config_raw = json.loads(file_open)
+
+        config = PitchConfig(config_raw)
+        if additional_config is not None:
+            config.update(additional_config)
+
+        return config
 
