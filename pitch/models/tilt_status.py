@@ -9,14 +9,14 @@ class TiltStatus(JsonSerialize):
         self.timestamp = datetime.datetime.now()
         self.color = color
         self.temp_f = temp_f
-        self.temp_c = TiltStatus.get_celcius(temp_f)
+        self.temp_c = TiltStatus.get_celsius(temp_f)
         self.original_gravity = config.get_original_gravity(color)
         self.gravity = current_gravity
         self.abv = TiltStatus.get_abv(self.original_gravity, current_gravity)
         self.apparent_attenuation = TiltStatus.get_apparent_attenuation(self.original_gravity, current_gravity)
 
     @staticmethod
-    def get_celcius(temp_f):
+    def get_celsius(temp_f):
         return round((temp_f - 32) * 5.0/9.0)
 
     @staticmethod
