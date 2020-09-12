@@ -39,7 +39,8 @@ class InfluxDbCloudProvider(implements(CloudProviderBase)):
                     "temp_f": tilt_status.temp_f,
                     "temp_c": tilt_status.temp_c,
                     "gravity": tilt_status.gravity,
-                    "abv": tilt_status.abv
+                    "abv": tilt_status.abv,
+                    "apparent_attenuation": tilt_status.apparent_attenuation
                 }
             }
         ]
