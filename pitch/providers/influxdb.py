@@ -37,7 +37,7 @@ class InfluxDbCloudProvider(implements(CloudProviderBase)):
                 },
                 "fields": {
                     "temp_f": tilt_status.temp_f,
-                    "tempt_c": tilt_status.temp_c,
+                    "temp_c": tilt_status.temp_c,
                     "gravity": tilt_status.gravity
                 }
             }

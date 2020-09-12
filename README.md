@@ -13,7 +13,7 @@ The following features are implemented, planned, or will be investigated in the 
 * [x] Track multiple Tilts at once
 * [x] Prometheus Metrics
 * [x] Tilt status log file (JSON)
-* [ ] InfluxDB Metrics
+* [X] InfluxDB Metrics
 * [ ] Multple logging and metric sources simultaneously
 * [ ] Webhooks for supporting generic integrations (similar to Tilt's Cloud Logging feature)
 * [ ] Brewing Cloud Services (Brewstats, Brewer's Friend, etc.)
@@ -22,14 +22,15 @@ The following features are implemented, planned, or will be investigated in the 
 
 # Name
 
-It's an unoffical tradition to name tech projects using nautical terms.  Pitch is a term used to describe the tilting/movement of a ship at sea.  Given pitching is also a brewing term, it seemed like a good fit.
+It's an unofficial tradition to name tech projects using nautical terms.  Pitch is a term used to describe the tilting/movement of a ship at sea.  Given pitching is also a brewing term, it seemed like a good fit.
 
-# Configuration
+#Configuration
 
 Custom configurations can be used by creating a file `pitch.json` in the working directory you are running Pitch from.
 
 | Option                       | Purpose                      | Default               |
 | ---------------------------- | ---------------------------- | --------------------- |
+| `simulate_beacons` (bool) | Creates fake Tilt beacon events instead of scanning, useful for testing | False |
 | `webhook_urls` (array) | Adds webhook URLs for Tilt status updates | None/empty |
 | `log_file_path` (str) | Path to file for JSON event logging | `pitch_log.json` |
 | `log_file_max_mb` (int) | Max JSON log file size in megabytes | `10` |
@@ -93,6 +94,33 @@ Tilt status broadcast events can be logged to a json file using the config optio
 {"timestamp": "2020-09-11T02:15:34.548556", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997}
 {"timestamp": "2020-09-11T02:15:35.557411", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997}
 {"timestamp": "2020-09-11T02:15:36.562158", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.996}
+```
+
+## InfluxDB Metrics
+
+Metrics can be sent to an InfluxDB database.  See [Configuration section](#Configuration) for setting this up.  Pitch does not create the database
+so it must be created before using Pitch.  
+
+Each beacon event from a Tilt will create a measurement like this:
+
+```json
+{
+    "measurement": "tilt",
+    "tags": {
+        "color": "purple"
+    },
+    "fields": {
+        "temp_f": 70,
+        "temp_c": 21,
+        "gravity": 1.035
+    }
+}
+```  
+
+and can be queried with something like:
+
+```sql
+SELECT mean("gravity") AS "mean_gravity" FROM "pitch"."autogen"."tilt" WHERE time > :dashboardTime: AND time < :upperDashboardTime: AND "color"='purple' GROUP BY time(:interval:) FILL(previous)
 ```
 
 # Examples
