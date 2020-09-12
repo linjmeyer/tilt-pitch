@@ -1,6 +1,6 @@
 # Pitch (Tilt Hydrometer tool)
 
-Pitch is an unofficial replacement for Tilt Hydrometer mobile apps and TiltPi software.  Tilt hardware is required.  It is designed to be easy to use and integrated with other tools like Promethues for metrics, or any generic third party source using webhooks.
+Pitch is an unofficial replacement for Tilt Hydrometer mobile apps and TiltPi software.  Tilt hardware is required.  It is designed to be easy to use and integrated with other tools like Promethues and InfluxDB for metrics, or any generic third party source using webhooks.
 
 # Why
 
@@ -86,10 +86,10 @@ Webhooks are sent as HTTP POST with the following json payload:
 ```
 {
     "color": "purple",
-    "temp_f": 69,
-    "temp_c": 21,
+    "temp_fahrenheit": 69,
+    "temp_celsius": 21,
     "gravity": 1.035,
-    "abv": 5.63,
+    "alcohol_by_volume": 5.63,
     "apparent_attenuation": 32.32
 }
 ```
@@ -99,12 +99,12 @@ Webhooks are sent as HTTP POST with the following json payload:
 Tilt status broadcast events can be logged to a json file using the config option `log_file_path`.  Each event is a newline.  Example file:
 
 ```
-{"timestamp": "2020-09-11T02:15:30.525232", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997, "abv": 5.63, "apparent_attenuation": 32.32}
-{"timestamp": "2020-09-11T02:15:32.539619", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997, "abv": 5.63, "apparent_attenuation": 32.32}
-{"timestamp": "2020-09-11T02:15:33.545388", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997, "abv": 5.63, "apparent_attenuation": 32.32}
-{"timestamp": "2020-09-11T02:15:34.548556", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997, "abv": 5.63, "apparent_attenuation": 32.32}
-{"timestamp": "2020-09-11T02:15:35.557411", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.997, "abv": 5.63, "apparent_attenuation": 32.32}
-{"timestamp": "2020-09-11T02:15:36.562158", "color": "purple", "temp_f": 70, "temp_c": 21, "gravity": 0.996, "abv": 5.63, "apparent_attenuation": 32.32}
+{"timestamp": "2020-09-11T02:15:30.525232", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
+{"timestamp": "2020-09-11T02:15:32.539619", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
+{"timestamp": "2020-09-11T02:15:33.545388", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
+{"timestamp": "2020-09-11T02:15:34.548556", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
+{"timestamp": "2020-09-11T02:15:35.557411", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
+{"timestamp": "2020-09-11T02:15:36.562158", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.996, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
 ```
 
 ## InfluxDB Metrics
@@ -121,10 +121,10 @@ Each beacon event from a Tilt will create a measurement like this:
         "color": "purple"
     },
     "fields": {
-        "temp_f": 70,
-        "temp_c": 21,
+        "temp_fahrenheit": 70,
+        "temp_celsius": 21,
         "gravity": 1.035,
-        "abv": 5.63,
+        "alcohol_by_volume": 5.63,
         "apparent_attenuation": 32.32
     }
 }
