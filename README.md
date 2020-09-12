@@ -14,8 +14,8 @@ The following features are implemented, planned, or will be investigated in the 
 * [x] Prometheus Metrics
 * [x] Tilt status log file (JSON)
 * [X] InfluxDB Metrics
-* [ ] Multple logging and metric sources simultaneously
-* [ ] Webhooks for supporting generic integrations (similar to Tilt's Cloud Logging feature)
+* [X] Multiple logging and metric sources simultaneously
+* [X] Webhooks for supporting generic integrations (similar to Tilt's Cloud Logging feature)
 * [ ] Brewing Cloud Services (Brewstats, Brewer's Friend, etc.)
 * [ ] Google Sheets (using any Google Drive)
 
