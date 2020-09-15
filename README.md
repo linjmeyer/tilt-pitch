@@ -43,6 +43,13 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 
 # Integrations
 
+* [Prometheus](#Prometheus-Metrics)
+* [InfluxDb](#InfluxDB-Metrics)
+* [Webhook](#Webhook)
+* [JSON Log File](#JSON-Log-File)
+
+Don't see one you want, send a PR implementing [CloudProviderBase](https://github.com/linjmeyer/tilt-pitch/blob/master/pitch/abstractions/cloud_provider.py)
+
 ## Prometheus Metrics
 
 Prometheus metrics are hosted on port 8000.  For each Tilt the followed Prometheus metrics are created:
