@@ -20,11 +20,7 @@ The following features are implemented, planned, or will be investigated in the 
 * [ ] Google Sheets (using any Google Drive)
 
 
-# Name
-
-It's an unofficial tradition to name tech projects using nautical terms.  Pitch is a term used to describe the tilting/movement of a ship at sea.  Given pitching is also a brewing term, it seemed like a good fit.
-
-#Configuration
+# Configuration
 
 Custom configurations can be used by creating a file `pitch.json` in the working directory you are running Pitch from.
 
@@ -143,3 +139,8 @@ See the examples directory for:
 * InfluxDB Grafana Dashboard
 * Running Pitch as a systemd service
 * pitch.json configuration file
+
+
+# Name
+
+It's an unofficial tradition to name tech projects using nautical terms.  Pitch is a term used to describe the tilting/movement of a ship at sea.  Given pitching is also a brewing term, it seemed like a good fit.
