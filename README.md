@@ -17,7 +17,7 @@ The following features are implemented, planned, or will be investigated in the 
 * [X] Multiple logging and metric sources simultaneously
 * [X] Webhooks for supporting generic integrations (similar to Tilt's Cloud Logging feature)
 * [X] Gravity, original gravity, ABV, temperature and apparent attenuation
-* [X] Custom Beer/brew names (e.g. color tilt = Pumpkin IPA)
+* [X] Custom Beer/brew names (e.g. purple tilt = Pumpkin Ale)
 * [ ] Brewing Cloud Services (Brewstats, Brewer's Friend, etc.)
 * [ ] Google Sheets (using any Google Drive)
 
@@ -73,27 +73,27 @@ Prometheus metrics are hosted on port 8000.  For each Tilt the followed Promethe
 ```
 # HELP pitch_beacons_received_total Number of beacons received
 # TYPE pitch_beacons_received_total counter
-pitch_beacons_received_total{color="purple"} 3321.0
+pitch_beacons_received_total{name="Pumpkin Ale", color="purple"} 3321.0
 
 # HELP pitch_temperature_fahrenheit Temperature in fahrenheit
 # TYPE pitch_temperature_fahrenheit gauge
-pitch_temperature_fahrenheit{color="purple"} 69.0
+pitch_temperature_fahrenheit{name="Pumpkin Ale", color="purple"} 69.0
 
 # HELP pitch_temperature_celcius Temperature in celcius
 # TYPE pitch_temperature_celcius gauge
-pitch_temperature_celcius{color="purple"} 21.0
+pitch_temperature_celcius{name="Pumpkin Ale", color="purple"} 21.0
 
 # HELP pitch_gravity Gravity of the beer
 # TYPE pitch_gravity gauge
-pitch_gravity{color="purple"} 1.035
+pitch_gravity{name="Pumpkin Ale", color="purple"} 1.035
 
 # HELP pitch_alcohol_by_volume ABV of the beer
 # TYPE pitch_alcohol_by_volume gauge
-pitch_alcohol_by_volume{color="purple"} 5.63
+pitch_alcohol_by_volume{name="Pumpkin Ale", color="purple"} 5.63
 
 # HELP pitch_apparent_attenuation Apparent attenuation of the beer
 # TYPE pitch_apparent_attenuation gauge
-pitch_apparent_attenuation{color="purple"} 32.32
+pitch_apparent_attenuation{name="Pumpkin Ale", color="purple"} 32.32
 ```
 
 ## Webhook
@@ -104,6 +104,7 @@ Webhooks are sent as HTTP POST with the following json payload:
 
 ```
 {
+    "name": "Pumpkin Ale",
     "color": "purple",
     "temp_fahrenheit": 69,
     "temp_celsius": 21,
@@ -118,12 +119,12 @@ Webhooks are sent as HTTP POST with the following json payload:
 Tilt status broadcast events can be logged to a json file using the config option `log_file_path`.  Each event is a newline.  Example file:
 
 ```
-{"timestamp": "2020-09-11T02:15:30.525232", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
-{"timestamp": "2020-09-11T02:15:32.539619", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
-{"timestamp": "2020-09-11T02:15:33.545388", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
-{"timestamp": "2020-09-11T02:15:34.548556", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
-{"timestamp": "2020-09-11T02:15:35.557411", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
-{"timestamp": "2020-09-11T02:15:36.562158", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.996, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
+{"timestamp": "2020-09-11T02:15:30.525232", "name": "Pumpkin Ale", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
+{"timestamp": "2020-09-11T02:15:32.539619", "name": "Pumpkin Ale", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
+{"timestamp": "2020-09-11T02:15:33.545388", "name": "Pumpkin Ale", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
+{"timestamp": "2020-09-11T02:15:34.548556", "name": "Pumpkin Ale", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
+{"timestamp": "2020-09-11T02:15:35.557411", "name": "Pumpkin Ale", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.997, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
+{"timestamp": "2020-09-11T02:15:36.562158", "name": "Pumpkin Ale", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.996, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
 ```
 
 ## InfluxDB Metrics
@@ -137,6 +138,7 @@ Each beacon event from a Tilt will create a measurement like this:
 {
     "measurement": "tilt",
     "tags": {
+        "name": "Pumpkin Ale", 
         "color": "purple"
     },
     "fields": {
@@ -152,7 +154,7 @@ Each beacon event from a Tilt will create a measurement like this:
 and can be queried with something like:
 
 ```sql
-SELECT mean("gravity") AS "mean_gravity" FROM "pitch"."autogen"."tilt" WHERE time > :dashboardTime: AND time < :upperDashboardTime: AND "color"='purple' GROUP BY time(:interval:) FILL(previous)
+SELECT mean("gravity") AS "mean_gravity" FROM "pitch"."autogen"."tilt" WHERE time > :dashboardTime: AND time < :upperDashboardTime: AND "name"='Pumpkin Ale' GROUP BY time(:interval:) FILL(previous)
 ```
 
 # Examples
