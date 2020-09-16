@@ -16,6 +16,8 @@ The following features are implemented, planned, or will be investigated in the 
 * [X] InfluxDB Metrics
 * [X] Multiple logging and metric sources simultaneously
 * [X] Webhooks for supporting generic integrations (similar to Tilt's Cloud Logging feature)
+* [X] Gravity, original gravity, ABV, temperature and apparent attenuation
+* [X] Custom Beer/brew names (e.g. color tilt = Pumpkin IPA)
 * [ ] Brewing Cloud Services (Brewstats, Brewer's Friend, etc.)
 * [ ] Google Sheets (using any Google Drive)
 
@@ -38,6 +40,7 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | `influxdb_username` (str) | Username for InfluxDB | None/empty |
 | `influxdb_batch_size` (int) | Number of events to batch | `10` |
 | `influxdb_timeout_seconds` (int) | Timeout of InfluxDB reads/writes | `5` |
+| `{color}_name` (str) | Name of your brew, where {color} is the color of the Tilt (purple, red, etc) | Color (e.g. purple, red, etc) |
 | `{color}_original_gravity` (float) | Original gravity of the beer, where {color} is the color of the Tilt (purple, red, etc) | None/empty |
 
 

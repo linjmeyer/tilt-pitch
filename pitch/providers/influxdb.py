@@ -33,7 +33,8 @@ class InfluxDbCloudProvider(implements(CloudProviderBase)):
             {
                 "measurement": "tilt",
                 "tags": {
-                    "color": tilt_status.color
+                    "color": tilt_status.color,
+                    "name": tilt_status.name
                 },
                 "fields": {
                     "temp_fahrenheit": tilt_status.temp_fahrenheit,

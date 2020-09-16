@@ -8,6 +8,7 @@ class TiltStatus(JsonSerialize):
     def __init__(self, color, temp_fahrenheit, current_gravity, config: PitchConfig):
         self.timestamp = datetime.datetime.now()
         self.color = color
+        self.name = config.get_brew_name(color)
         self.temp_fahrenheit = temp_fahrenheit
         self.temp_celsius = TiltStatus.get_celsius(temp_fahrenheit)
         self.original_gravity = config.get_original_gravity(color)

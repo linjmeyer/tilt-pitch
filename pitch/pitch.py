@@ -2,9 +2,8 @@ import argparse
 import threading
 import time
 from pyfiglet import Figlet
-from beacontools import BeaconScanner, IBeaconFilter, IBeaconAdvertisement, parse_packet
+from beacontools import BeaconScanner
 from .models import TiltStatus
-from .abstractions import CloudProviderBase
 from .providers import PrometheusCloudProvider, WebhookCloudProvider, FileCloudProvider, InfluxDbCloudProvider
 from .configuration import PitchConfig
 

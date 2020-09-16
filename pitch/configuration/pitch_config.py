@@ -31,6 +31,9 @@ class PitchConfig:
     def get_original_gravity(self, color: str):
         return self.__dict__.get(color + '_original_gravity')
 
+    def get_brew_name(self, color: str):
+        return self.__dict__.get(color + '_name', color)
+
 
     @staticmethod
     def load(additional_config: dict = None):
