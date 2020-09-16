@@ -1,11 +1,12 @@
 import setuptools
+import os
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name="tilt-pitch",
-    version="0.0.1",
+    version=os.getenv('PITCH_VERSION', "0.0.1"),
     author="Lin Meyer",
     author_email="lin@linmeyer.net",
     description="Simple replacement for the Tilt Hydrometer mobile apps and TiltPi with lots of features",
