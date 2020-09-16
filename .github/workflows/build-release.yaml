@@ -36,5 +36,5 @@ jobs:
           exit 1
         fi
         echo "Using version: $PITCH_VERSION"
-        python pitch/setup.py sdist bdist_wheel
+        PITCH_VERSION="$PITCH_VERSION" python pitch/setup.py sdist bdist_wheel
         twine upload dist/*
