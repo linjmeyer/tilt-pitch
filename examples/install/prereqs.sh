@@ -1,4 +1,5 @@
 #!/bin/bash
+# Example installation for Ubuntu/Fedora/Raspberry PI/etc.
 echo "Updating Linux packages"
 apt-get update
 echo "Installing required Linux packages"

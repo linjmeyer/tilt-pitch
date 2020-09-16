@@ -21,8 +21,15 @@ The following features are implemented, planned, or will be investigated in the 
 * [ ] Brewing Cloud Services (Brewstats, Brewer's Friend, etc.)
 * [ ] Google Sheets (using any Google Drive)
 
+# Installation
 
-# Configuration
+Pitch will only work on Linux, with libbluetooth-dev installed.  [See examples/install/prereq.sh](https://github.com/linjmeyer/tilt-pitch/blob/master/examples/install/prereq.sh) for 
+an example of how to do this using apt-get (Ubuntu, Raspberry Pi, etc).  
+
+After setting up prereqs install using: `pip3 install tilt-pitch`
+Pitch can be run using: `python3 -m pitch`
+
+## Configuration
 
 Custom configurations can be used by creating a file `pitch.json` in the working directory you are running Pitch from.
 
@@ -43,6 +50,12 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | `{color}_name` (str) | Name of your brew, where {color} is the color of the Tilt (purple, red, etc) | Color (e.g. purple, red, etc) |
 | `{color}_original_gravity` (float) | Original gravity of the beer, where {color} is the color of the Tilt (purple, red, etc) | None/empty |
 
+## Running without a Tilt or on Mac/Windows
+
+If you want to run Tilt on a non-linux system, for development, or without a Tilt you can use the `--simulate-beacons` flag to create fake
+beacon events instead of scanning for Tilt events via Bluetooth.  
+
+`python3 -m pitch --simulate-beacons`
 
 # Integrations
 
