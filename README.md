@@ -23,7 +23,7 @@ The following features are implemented, planned, or will be investigated in the 
 
 # Installation
 
-Pitch will only work on Linux, with libbluetooth-dev installed.  [See examples/install/prereq.sh](https://github.com/linjmeyer/tilt-pitch/blob/master/examples/install/prereq.sh) for 
+Pitch will only work on Linux, with libbluetooth-dev installed.  [See examples/install/prereq.sh](https://github.com/linjmeyer/tilt-pitch/blob/master/examples/install/prereqs.sh) for 
 an example of how to do this using apt-get (Ubuntu, Raspberry Pi, etc).  
 
 After setting up prereqs install using: `pip3 install tilt-pitch`
