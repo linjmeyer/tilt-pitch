@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1600221454294,
+  "iteration": 1600620201966,
   "links": [],
   "panels": [
     {
@@ -79,23 +79,12 @@
       "targets": [
         {
           "alias": "Gravity",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "linear"
-              ],
-              "type": "fill"
-            }
-          ],
+          "groupBy": [],
           "measurement": "tilt",
           "orderByTime": "ASC",
           "policy": "autogen",
+          "query": "SELECT last(\"gravity\") FROM \"autogen\".\"tilt\" WHERE (\"name\" =~ /^$name$/) AND $timeFilter GROUP BY time($__interval) fill(linear)",
+          "rawQuery": false,
           "refId": "A",
           "resultFormat": "time_series",
           "select": [
@@ -108,7 +97,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               }
             ]
           ],
@@ -171,20 +160,7 @@
       "targets": [
         {
           "alias": "Gravity",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "linear"
-              ],
-              "type": "fill"
-            }
-          ],
+          "groupBy": [],
           "measurement": "tilt",
           "orderByTime": "ASC",
           "policy": "autogen",
@@ -200,7 +176,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               }
             ]
           ],
@@ -263,20 +239,7 @@
       "targets": [
         {
           "alias": "Gravity",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "linear"
-              ],
-              "type": "fill"
-            }
-          ],
+          "groupBy": [],
           "measurement": "tilt",
           "orderByTime": "ASC",
           "policy": "autogen",
@@ -292,7 +255,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               }
             ]
           ],
@@ -355,20 +318,7 @@
       "targets": [
         {
           "alias": "Gravity",
-          "groupBy": [
-            {
-              "params": [
-                "$__interval"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "linear"
-              ],
-              "type": "fill"
-            }
-          ],
+          "groupBy": [],
           "measurement": "tilt",
           "orderByTime": "ASC",
           "policy": "autogen",
@@ -384,7 +334,7 @@
               },
               {
                 "params": [],
-                "type": "mean"
+                "type": "last"
               }
             ]
           ],
@@ -516,7 +466,7 @@
           "format": "short",
           "label": null,
           "logBase": 1,
-          "max": "1.05",
+          "max": "1.08",
           "min": "1.000",
           "show": true
         },
@@ -983,7 +933,7 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -1002,5 +952,5 @@
   "timezone": "",
   "title": "Beer!",
   "uid": "SRIwTkigk",
-  "version": 12
+  "version": 16
 }
