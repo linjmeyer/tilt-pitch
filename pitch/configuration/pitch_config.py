@@ -1,6 +1,7 @@
 import json
 import os
 
+
 class PitchConfig:
 
     def __init__(self, data: dict):
@@ -20,6 +21,9 @@ class PitchConfig:
         self.influxdb_password = None
         self.influxdb_batch_size = 10
         self.influxdb_timeout_seconds = 5
+        # Brewfather
+        self.brewfather_custom_stream_url = None
+        self.brewfather_custom_stream_temp_unit = "F"
         # Simulations
         self.simulate_beacons = False
         # Load user inputs from config file
