@@ -63,6 +63,7 @@ beacon events instead of scanning for Tilt events via Bluetooth.
 * [InfluxDb](#InfluxDB-Metrics)
 * [Webhook](#Webhook)
 * [JSON Log File](#JSON-Log-File)
+* [Brewfather](#Brewfather)
 
 Don't see one you want, send a PR implementing [CloudProviderBase](https://github.com/linjmeyer/tilt-pitch/blob/master/pitch/abstractions/cloud_provider.py)
 
@@ -156,6 +157,15 @@ and can be queried with something like:
 ```sql
 SELECT mean("gravity") AS "mean_gravity" FROM "pitch"."autogen"."tilt" WHERE time > :dashboardTime: AND time < :upperDashboardTime: AND "name"='Pumpkin Ale' GROUP BY time(:interval:) FILL(previous)
 ```
+
+## Brewfather
+
+Tilt data can be logged to Brewfather using their Custom Log Stream feature.  See [Configuration section](#Configuration) for setting this up in the Pitch config.  Brewfather
+only allows logging data every fifteen minutes (per Tilt).  Devices will show as `PitchTilt{color}`.
+
+To setup login into Brewfather > Settings > PowerUps > Enable Custom Stream > Copy the URL into your Pitch config
+
+![Configuring Brewfather Custom Stream URL](misc/brewfather_custom_stream.png)
 
 # Examples
 

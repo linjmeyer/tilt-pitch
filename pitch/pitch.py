@@ -3,8 +3,9 @@ import threading
 import time
 from pyfiglet import Figlet
 from beacontools import BeaconScanner
+from ratelimit import RateLimitException
 from .models import TiltStatus
-from .providers import PrometheusCloudProvider, WebhookCloudProvider, FileCloudProvider, InfluxDbCloudProvider
+from .providers import *
 from .configuration import PitchConfig
 
 #############################################
@@ -34,7 +35,8 @@ config = PitchConfig.load(vars(args))
 all_providers = [
         PrometheusCloudProvider(config),
         FileCloudProvider(config),
-        InfluxDbCloudProvider(config)
+        InfluxDbCloudProvider(config),
+        BrewfatherCustomStreamCloudProvider(config)
     ]
 
 enabled_providers = list()
@@ -94,16 +96,21 @@ def beacon_callback(bt_addr, rssi, packet, additional_info):
         for provider in enabled_providers:
             try:
                 provider.update(tilt_status)
+            except RateLimitException as e:
+                # nothing to worry about, just called this too many times (locally)
+                print("Skipping update due to rate limiting for provider {}".format(provider))
             except Exception as e:
                 #todo: better logging of errors
                 print(e)
         # Log it to console/stdout
         print(tilt_status.json())
 
+
 def get_decimal_gravity(gravity):
     # gravity will be an int like 1035
     # turn into decimal, like 1.035
     return gravity * .001
+
 
 def add_webhook_providers(config: PitchConfig):
     # Multiple webhooks can be fired, so create them dynamically and add to
