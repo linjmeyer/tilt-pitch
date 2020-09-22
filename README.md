@@ -47,6 +47,7 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | `influxdb_username` (str) | Username for InfluxDB | None/empty |
 | `influxdb_batch_size` (int) | Number of events to batch | `10` |
 | `influxdb_timeout_seconds` (int) | Timeout of InfluxDB reads/writes | `5` |
+| `brewfather_custom_stream_url` (str) | URL of Brewfather Custom Stream | None/empty |
 | `{color}_name` (str) | Name of your brew, where {color} is the color of the Tilt (purple, red, etc) | Color (e.g. purple, red, etc) |
 | `{color}_original_gravity` (float) | Original gravity of the beer, where {color} is the color of the Tilt (purple, red, etc) | None/empty |
 
