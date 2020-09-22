@@ -100,7 +100,8 @@ pitch_apparent_attenuation{name="Pumpkin Ale", color="purple"} 32.32
 
 ## Webhook
 
-Unlimited webhooks can be configured using the config option `webhook_urls`.  Each Tilt status broadcast will result in a webhook call to all URLs.
+Unlimited webhooks URLs can be configured using the config option `webhook_urls`.  Tilt broadcasts are passed to each URL at a max rate of 1 broadcast per second to avoid
+overwhelming the web servers with large amounts of data.
 
 Webhooks are sent as HTTP POST with the following json payload:
 
