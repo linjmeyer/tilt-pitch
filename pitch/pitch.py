@@ -81,7 +81,7 @@ def simulate_beacons():
     })
     while True:
         beacon_callback(None, None, fake_packet, dict())
-        time.sleep(1)
+        time.sleep(0.25)
 
 
 def beacon_callback(bt_addr, rssi, packet, additional_info):
@@ -96,11 +96,11 @@ def beacon_callback(bt_addr, rssi, packet, additional_info):
         for provider in enabled_providers:
             try:
                 provider.update(tilt_status)
-            except RateLimitException as e:
+            except RateLimitException:
                 # nothing to worry about, just called this too many times (locally)
                 print("Skipping update due to rate limiting for provider {}".format(provider))
             except Exception as e:
-                #todo: better logging of errors
+                # todo: better logging of errors
                 print(e)
         # Log it to console/stdout
         print(tilt_status.json())

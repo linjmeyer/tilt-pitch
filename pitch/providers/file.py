@@ -5,6 +5,7 @@ from interface import implements
 import logging
 import logging.handlers
 
+
 class FileCloudProvider(implements(CloudProviderBase)):
 
     def __init__(self, config: PitchConfig):
