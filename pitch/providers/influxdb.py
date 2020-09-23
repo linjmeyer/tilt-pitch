@@ -3,6 +3,7 @@ from ..abstractions import CloudProviderBase
 from ..configuration import PitchConfig
 from interface import implements
 from influxdb import InfluxDBClient
+from ratelimit import limits
 
 class InfluxDbCloudProvider(implements(CloudProviderBase)):
 
@@ -21,9 +22,10 @@ class InfluxDbCloudProvider(implements(CloudProviderBase)):
                                      self.config.influxdb_database, 
                                      timeout=self.config.influxdb_timeout_seconds)
 
+    @limits(calls=1, period=1)
     def update(self, tilt_status: TiltStatus):
         points = self.get_points(tilt_status)
-        self.client.write_points(points, batch_size=self.config.influxdb_batch_size)
+        self.client.write_points(points)
 
     def enabled(self):
         return (self.config.influxdb_hostname)

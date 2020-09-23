@@ -19,7 +19,6 @@ class PitchConfig:
         self.influxdb_port = None
         self.influxdb_username = None
         self.influxdb_password = None
-        self.influxdb_batch_size = 10
         self.influxdb_timeout_seconds = 5
         # Brewfather
         self.brewfather_custom_stream_url = None
