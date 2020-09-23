@@ -9,6 +9,7 @@ class InfluxDbCloudProvider(implements(CloudProviderBase)):
     def __init__(self, config: PitchConfig):
         self.config = config
         self.str_name = "InfluxDb ({}:{})".format(config.influxdb_hostname,config.influxdb_port)
+        self.batch = list()
 
     def __str__(self):
         return self.str_name
@@ -22,26 +23,28 @@ class InfluxDbCloudProvider(implements(CloudProviderBase)):
                                      timeout=self.config.influxdb_timeout_seconds)
 
     def update(self, tilt_status: TiltStatus):
-        points = self.get_points(tilt_status)
-        self.client.write_points(points, batch_size=self.config.influxdb_batch_size)
+        self.batch.append(self.get_point(tilt_status))
+        if len(self.batch) < self.config.influxdb_batch_size:
+            return
+        # Batch size has been met, update and clear
+        self.client.write_points(self.batch)
+        self.batch.clear()
 
     def enabled(self):
         return (self.config.influxdb_hostname)
 
-    def get_points(self, tilt_status: TiltStatus):
-        return [
-            {
-                "measurement": "tilt",
-                "tags": {
-                    "color": tilt_status.color,
-                    "name": tilt_status.name
-                },
-                "fields": {
-                    "temp_fahrenheit": tilt_status.temp_fahrenheit,
-                    "temp_celsius": tilt_status.temp_celsius,
-                    "gravity": tilt_status.gravity,
-                    "alcohol_by_volume": tilt_status.alcohol_by_volume,
-                    "apparent_attenuation": tilt_status.apparent_attenuation
+    def get_point(self, tilt_status: TiltStatus):
+        return {
+                    "measurement": "tilt",
+                    "tags": {
+                        "color": tilt_status.color,
+                        "name": tilt_status.name
+                    },
+                    "fields": {
+                        "temp_fahrenheit": tilt_status.temp_fahrenheit,
+                        "temp_celsius": tilt_status.temp_celsius,
+                        "gravity": tilt_status.gravity,
+                        "alcohol_by_volume": tilt_status.alcohol_by_volume,
+                        "apparent_attenuation": tilt_status.apparent_attenuation
+                    }
                 }
-            }
-        ]
