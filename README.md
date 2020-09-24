@@ -37,6 +37,8 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | ---------------------------- | ---------------------------- | --------------------- |
 | `simulate_beacons` (bool) | Creates fake Tilt beacon events instead of scanning, useful for testing | False |
 | `webhook_urls` (array) | Adds webhook URLs for Tilt status updates | None/empty |
+| `webhook_limit_rate` (int) | Number of webhooks to fire for the limit period (per URL) | 1 |
+| `webhook_limit_period` (int) | Period for rate limiting (in seconds) | 1 |
 | `log_file_path` (str) | Path to file for JSON event logging | `pitch_log.json` |
 | `log_file_max_mb` (int) | Max JSON log file size in megabytes | `10` |
 | `prometheus_enabled` (bool) | Enable/Disable Prometheus metrics | `true` |
@@ -45,11 +47,19 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | `influxdb_port` (int) | Port for InfluxDB database | None/empty |
 | `influxdb_database` (str) | Name of InfluxDB database | None/empty |
 | `influxdb_username` (str) | Username for InfluxDB | None/empty |
-| `influxdb_batch_size` (int) | Number of events to batch | `10` |
+| `influxdb_batch_size` (int) | Number of events to batch.  Data is not saved to InfluxDB until this threshold is met | `10` |
 | `influxdb_timeout_seconds` (int) | Timeout of InfluxDB reads/writes | `5` |
 | `brewfather_custom_stream_url` (str) | URL of Brewfather Custom Stream | None/empty |
 | `{color}_name` (str) | Name of your brew, where {color} is the color of the Tilt (purple, red, etc) | Color (e.g. purple, red, etc) |
 | `{color}_original_gravity` (float) | Original gravity of the beer, where {color} is the color of the Tilt (purple, red, etc) | None/empty |
+
+## Rate Limiting and Batching
+
+A single Tilt can emit several events per second.  To avoid overloading integrations with data they may support rate limiting or batching.  Batching
+generally builds up a queue, once the max queue size is met the data is sent as a single batch, while rate limiting will drop events if they are 
+being sent too frequently.
+
+Refer to the above configuration and the integration list below for details on how this works for different integrations.
 
 ## Running without a Tilt or on Mac/Windows
 

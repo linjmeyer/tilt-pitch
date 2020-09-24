@@ -18,7 +18,7 @@
 from ..models import TiltStatus
 from ..abstractions import CloudProviderBase
 from ..configuration import PitchConfig
-from ratelimit import limits
+from ..rate_limiter import RateLimiter
 from interface import implements
 import requests
 import json
@@ -30,6 +30,7 @@ class BrewfatherCustomStreamCloudProvider(implements(CloudProviderBase)):
         self.url = config.brewfather_custom_stream_url
         self.temp_unit = BrewfatherCustomStreamCloudProvider._get_temp_unit(config)
         self.str_name = "Brewfather ({})".format(self.url)
+        self.rate_limiter = RateLimiter(rate=1, period=(60 * 15))  # 15 minutes
 
     def __str__(self):
         return self.str_name
@@ -37,8 +38,8 @@ class BrewfatherCustomStreamCloudProvider(implements(CloudProviderBase)):
     def start(self):
         pass
 
-    @limits(calls=1, period=900)  # 15 min * 60 seconds = 900 seconds
     def update(self, tilt_status: TiltStatus):
+        self.rate_limiter.approve()
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         payload = self._get_payload(tilt_status)
         result = requests.post(self.url, headers=headers, data=json.dumps(payload))

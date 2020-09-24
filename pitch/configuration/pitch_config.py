@@ -7,6 +7,8 @@ class PitchConfig:
     def __init__(self, data: dict):
         # Webhook
         self.webhook_urls = list()
+        self.webhook_limit_rate = 1
+        self.webhook_limit_period = 1
         # File Path
         self.log_file_path = 'pitch_log.json'
         self.log_file_max_mb = 10

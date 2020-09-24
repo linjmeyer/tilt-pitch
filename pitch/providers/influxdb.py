@@ -4,6 +4,7 @@ from ..configuration import PitchConfig
 from interface import implements
 from influxdb import InfluxDBClient
 
+
 class InfluxDbCloudProvider(implements(CloudProviderBase)):
 
     def __init__(self, config: PitchConfig):
