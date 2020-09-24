@@ -97,10 +97,10 @@ def beacon_callback(bt_addr, rssi, packet, additional_info):
         for provider in enabled_providers:
             try:
                 provider.update(tilt_status)
-                print("Updated provider {}".format(provider))
+                print("Updated provider {} for color {}".format(provider, color))
             except RateLimitedException:
                 # nothing to worry about, just called this too many times (locally)
-                print("Skipping update due to rate limiting for provider {}".format(provider))
+                print("Skipping update due to rate limiting for provider {} for color {}".format(provider, color))
             except Exception as e:
                 # todo: better logging of errors
                 print(e)

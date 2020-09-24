@@ -80,7 +80,9 @@ Don't see one you want, send a PR implementing [CloudProviderBase](https://githu
 
 ## Prometheus Metrics
 
-Prometheus metrics are hosted on port 8000.  For each Tilt the followed Prometheus metrics are created:
+Prometheus metrics are hosted on port 8000 by default.  No rate limiting or batching is used for Prometheus.  
+
+For each Tilt the followed Prometheus metrics are created:
 
 ```
 # HELP pitch_beacons_received_total Number of beacons received
@@ -110,8 +112,7 @@ pitch_apparent_attenuation{name="Pumpkin Ale", color="purple"} 32.32
 
 ## Webhook
 
-Unlimited webhooks URLs can be configured using the config option `webhook_urls`.  Tilt broadcasts are passed to each URL at a max rate of 1 broadcast per second to avoid
-overwhelming the web servers with large amounts of data.
+Unlimited webhooks URLs can be configured using the config option `webhook_urls`.  Webhooks are rate limited per URL and per Tilt, the rate limit is configurable.
 
 Webhooks are sent as HTTP POST with the following json payload:
 
@@ -143,7 +144,8 @@ Tilt status broadcast events can be logged to a json file using the config optio
 ## InfluxDB Metrics
 
 Metrics can be sent to an InfluxDB database.  See [Configuration section](#Configuration) for setting this up.  Pitch does not create the database
-so it must be created before using Pitch.  
+so it must be created before using Pitch.  Tilt events are sent to InfluxDB in batches, data is not sent until the batch size is reached.  The batch size
+does not take color into account, so a batch of 50 purple events works the same as 25 purple and 25 red.
 
 Each beacon event from a Tilt will create a measurement like this:
 
@@ -173,7 +175,7 @@ SELECT mean("gravity") AS "mean_gravity" FROM "pitch"."autogen"."tilt" WHERE tim
 ## Brewfather
 
 Tilt data can be logged to Brewfather using their Custom Log Stream feature.  See [Configuration section](#Configuration) for setting this up in the Pitch config.  Brewfather
-only allows logging data every fifteen minutes (per Tilt).  Devices will show as `PitchTilt{color}`.
+only allows logging data every fifteen minutes per Tilt which Pitch adheres to.  Devices will show as `PitchTilt{color}`.
 
 To setup login into Brewfather > Settings > PowerUps > Enable Custom Stream > Copy the URL into your Pitch config
 
