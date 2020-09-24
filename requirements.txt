@@ -6,4 +6,3 @@ jsonpickle
 python-interface
 pyfiglet
 influxdb
-ratelimit

@@ -3,10 +3,10 @@ import threading
 import time
 from pyfiglet import Figlet
 from beacontools import BeaconScanner
-from ratelimit import RateLimitException
 from .models import TiltStatus
 from .providers import *
 from .configuration import PitchConfig
+from .rate_limiter import RateLimitedException
 
 #############################################
 # Statics
@@ -97,9 +97,10 @@ def beacon_callback(bt_addr, rssi, packet, additional_info):
         for provider in enabled_providers:
             try:
                 provider.update(tilt_status)
-            except RateLimitException:
+                print("Updated provider {} for color {}".format(provider, color))
+            except RateLimitedException:
                 # nothing to worry about, just called this too many times (locally)
-                print("Skipping update due to rate limiting for provider {}".format(provider))
+                print("Skipping update due to rate limiting for provider {} for color {}".format(provider, color))
             except Exception as e:
                 # todo: better logging of errors
                 print(e)
@@ -117,7 +118,8 @@ def add_webhook_providers(config: PitchConfig):
     # Multiple webhooks can be fired, so create them dynamically and add to
     # all providers static list
     for url in config.webhook_urls:
-        all_providers.append(WebhookCloudProvider(url))
+        all_providers.append(WebhookCloudProvider(url, config))
+
 
 def start_message():
     f = Figlet(font='slant')
