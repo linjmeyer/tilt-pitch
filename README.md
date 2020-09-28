@@ -36,6 +36,7 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | Option                       | Purpose                      | Default               |
 | ---------------------------- | ---------------------------- | --------------------- |
 | `simulate_beacons` (bool) | Creates fake Tilt beacon events instead of scanning, useful for testing | False |
+| `queue_size` (int) | Max queue size for all Tilt event broadcasts.  Events are removed from the queue once all enabled providers have handled the event.  New events are dropped when the queue is maxed.  | `3` |
 | `webhook_urls` (array) | Adds webhook URLs for Tilt status updates | None/empty |
 | `webhook_limit_rate` (int) | Number of webhooks to fire for the limit period (per URL) | 1 |
 | `webhook_limit_period` (int) | Period for rate limiting (in seconds) | 1 |
@@ -55,9 +56,10 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 
 ## Rate Limiting and Batching
 
-A single Tilt can emit several events per second.  To avoid overloading integrations with data they may support rate limiting or batching.  Batching
-generally builds up a queue, once the max queue size is met the data is sent as a single batch, while rate limiting will drop events if they are 
-being sent too frequently.
+A single Tilt can emit several events per second.  To avoid overloading integrations with data events are queued with a max queue size set via the `queue_size`
+configuration parameter.  If new events are broadcast from a Tilt and the queue is full, they are ignored.  Events are removed from the queue once all enabled
+providers have handled the event.  Additionally some providers may implement their own queueing or rate limiting.  InfluxDB for example waits until a certain 
+queue size is met before sending a batch of events, and the Brewfather integration will only sent updates every fifteen minutes.
 
 Refer to the above configuration and the integration list below for details on how this works for different integrations.
 
