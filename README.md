@@ -59,7 +59,7 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 A single Tilt can emit several events per second.  To avoid overloading integrations with data events are queued with a max queue size set via the `queue_size`
 configuration parameter.  If new events are broadcast from a Tilt and the queue is full, they are ignored.  Events are removed from the queue once all enabled
 providers have handled the event.  Additionally some providers may implement their own queueing or rate limiting.  InfluxDB for example waits until a certain 
-queue size is met before sending a batch of events, and the Brewfather integration will only sent updates every fifteen minutes.
+queue size is met before sending a batch of events, and the Brewfather integration will only send updates every fifteen minutes.
 
 Refer to the above configuration and the integration list below for details on how this works for different integrations.
 
