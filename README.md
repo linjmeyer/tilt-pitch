@@ -185,7 +185,7 @@ To setup login into Brewfather > Settings > PowerUps > Enable Custom Stream > Co
 
 ![Configuring Brewfather Custom Stream URL](misc/brewfather_custom_stream.png)
 
-## Brewfather
+## Brewer's Friend
 
 Tilt data can be logged to Brewer's Friend using their Custom App Stream feature.  See [Configuration section](#Configuration) for setting this up in the Pitch config.  Brewer's Friend
 only allows logging data every fifteen minutes per Tilt which Pitch adheres to.  Devices will show as `Pitch-Tilt-{color}` as custom devices (they will not appear as Tilts).
