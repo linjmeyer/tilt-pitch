@@ -18,7 +18,7 @@ The following features are implemented, planned, or will be investigated in the 
 * [X] Webhooks for supporting generic integrations (similar to Tilt's Cloud Logging feature)
 * [X] Gravity, original gravity, ABV, temperature and apparent attenuation
 * [X] Custom Beer/brew names (e.g. purple tilt = Pumpkin Ale)
-* [ ] Brewing Cloud Services (Brewstats, Brewer's Friend, etc.)
+* [X] Brewing Cloud Services (Brewfather, Brewer's Friend, more can be requested!)
 * [ ] Google Sheets (using any Google Drive)
 
 # Installation
