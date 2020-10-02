@@ -3,3 +3,4 @@ from .webhook import WebhookCloudProvider
 from .file import FileCloudProvider
 from .influxdb import InfluxDbCloudProvider
 from .brewfather_custom_stream import BrewfatherCustomStreamCloudProvider
+from .brewersfriend_custom_stream import BrewersFriendCustomStreamCloudProvider

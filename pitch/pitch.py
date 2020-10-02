@@ -38,7 +38,8 @@ all_providers = [
         PrometheusCloudProvider(config),
         FileCloudProvider(config),
         InfluxDbCloudProvider(config),
-        BrewfatherCustomStreamCloudProvider(config)
+        BrewfatherCustomStreamCloudProvider(config),
+        BrewersFriendCustomStreamCloudProvider(config)
     ]
 
 enabled_providers = list()
@@ -103,7 +104,6 @@ def beacon_callback(bt_addr, rssi, packet, additional_info):
 
 
 def handle_pitch_queue():
-    print(pitch_q.qsize())
     if pitch_q.empty():
         return
 
