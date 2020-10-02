@@ -1,6 +1,7 @@
 import argparse
 import threading
 import time
+import queue
 from pyfiglet import Figlet
 from beacontools import BeaconScanner
 from .models import TiltStatus
@@ -42,6 +43,9 @@ all_providers = [
 
 enabled_providers = list()
 
+# Queue for holding incoming scans
+pitch_q = queue.Queue(maxsize=config.queue_size)
+
 #############################################
 #############################################
 
@@ -68,6 +72,8 @@ def pitch_main():
         print("...started: Tilt scanner")
 
     print("Ready!  Listening for beacons")
+    while True:
+        handle_pitch_queue()
 
 
 def simulate_beacons():
@@ -93,19 +99,33 @@ def beacon_callback(bt_addr, rssi, packet, additional_info):
         # major = degrees in F (int)
         # minor = gravity (int) - needs to be converted to float (e.g. 1035 -> 1.035)
         tilt_status = TiltStatus(color, packet.major, get_decimal_gravity(packet.minor), config)
-        # Update in enabled providers
-        for provider in enabled_providers:
-            try:
-                provider.update(tilt_status)
-                print("Updated provider {} for color {}".format(provider, color))
-            except RateLimitedException:
-                # nothing to worry about, just called this too many times (locally)
-                print("Skipping update due to rate limiting for provider {} for color {}".format(provider, color))
-            except Exception as e:
-                # todo: better logging of errors
-                print(e)
-        # Log it to console/stdout
-        print(tilt_status.json())
+        pitch_q.put(tilt_status)
+
+
+def handle_pitch_queue():
+    print(pitch_q.qsize())
+    if pitch_q.empty():
+        return
+
+    if pitch_q.full():
+        length = pitch_q.qsize()
+        print("Queue is full ({} events), scans will be ignored until the queue is reduced".format(length))
+
+    tilt_status = pitch_q.get()
+    for provider in enabled_providers:
+        try:
+            start = time.time()
+            provider.update(tilt_status)
+            time_spent = time.time() - start
+            print("Updated provider {} for color {} took {:.3f} seconds".format(provider, tilt_status.color, time_spent))
+        except RateLimitedException:
+            # nothing to worry about, just called this too many times (locally)
+            print("Skipping update due to rate limiting for provider {} for color {}".format(provider, tilt_status.color))
+        except Exception as e:
+            # todo: better logging of errors
+            print(e)
+    # Log it to console/stdout
+    print(tilt_status.json())
 
 
 def get_decimal_gravity(gravity):
