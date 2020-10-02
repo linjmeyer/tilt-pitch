@@ -51,6 +51,7 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | `influxdb_batch_size` (int) | Number of events to batch.  Data is not saved to InfluxDB until this threshold is met | `10` |
 | `influxdb_timeout_seconds` (int) | Timeout of InfluxDB reads/writes | `5` |
 | `brewfather_custom_stream_url` (str) | URL of Brewfather Custom Stream | None/empty |
+| `brewersfriend_api_key` (str) | API Key for Brewer's Friend | None/empty |
 | `{color}_name` (str) | Name of your brew, where {color} is the color of the Tilt (purple, red, etc) | Color (e.g. purple, red, etc) |
 | `{color}_original_gravity` (float) | Original gravity of the beer, where {color} is the color of the Tilt (purple, red, etc) | None/empty |
 
@@ -77,6 +78,7 @@ beacon events instead of scanning for Tilt events via Bluetooth.
 * [Webhook](#Webhook)
 * [JSON Log File](#JSON-Log-File)
 * [Brewfather](#Brewfather)
+* [Brewer's Friend](#BrewersFriend)
 
 Don't see one you want, send a PR implementing [CloudProviderBase](https://github.com/linjmeyer/tilt-pitch/blob/master/pitch/abstractions/cloud_provider.py)
 
@@ -180,6 +182,15 @@ Tilt data can be logged to Brewfather using their Custom Log Stream feature.  Se
 only allows logging data every fifteen minutes per Tilt which Pitch adheres to.  Devices will show as `PitchTilt{color}`.
 
 To setup login into Brewfather > Settings > PowerUps > Enable Custom Stream > Copy the URL into your Pitch config
+
+![Configuring Brewfather Custom Stream URL](misc/brewfather_custom_stream.png)
+
+## Brewer's Friend
+
+Tilt data can be logged to Brewer's Friend using their Custom App Stream feature.  See [Configuration section](#Configuration) for setting this up in the Pitch config.  Brewer's Friend
+only allows logging data every fifteen minutes per Tilt which Pitch adheres to.  Devices will show as `Pitch-Tilt-{color}` as custom devices (they will not appear as Tilts).
+
+To setup login into Brewer's Friend > Profile > Integrations > Copy Api Key
 
 ![Configuring Brewfather Custom Stream URL](misc/brewfather_custom_stream.png)
 

@@ -28,6 +28,9 @@ class PitchConfig:
         # Brewfather
         self.brewfather_custom_stream_url = None
         self.brewfather_custom_stream_temp_unit = "F"
+        # Brewersfriend
+        self.brewersfriend_api_key = None
+        self.brewersfriend_temp_unit = "F"
         # Simulations
         self.simulate_beacons = False
         # Load user inputs from config file
