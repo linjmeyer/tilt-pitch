@@ -54,6 +54,8 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | `brewersfriend_api_key` (str) | API Key for Brewer's Friend | None/empty |
 | `{color}_name` (str) | Name of your brew, where {color} is the color of the Tilt (purple, red, etc) | Color (e.g. purple, red, etc) |
 | `{color}_original_gravity` (float) | Original gravity of the beer, where {color} is the color of the Tilt (purple, red, etc) | None/empty |
+| `{color}_temp_offset` (int) | Temperature offset to calibrate Tilt temperatures with a secondary reading [See Calibration](#Calibration) | 0 |
+| `{color}_gravity_offset` (float) | Gravity offset to calibrate Tilt temperatures with a secondary reading [See Calibration](#Calibration)  | 0 |
 
 ## Rate Limiting and Batching
 
@@ -63,6 +65,25 @@ providers have handled the event.  Additionally some providers may implement the
 queue size is met before sending a batch of events, and the Brewfather integration will only send updates every fifteen minutes.
 
 Refer to the above configuration and the integration list below for details on how this works for different integrations.
+
+## Calibration
+
+You can calibrate temperature and gravity for each Tilt by color.  To do this stop Pitch if it is running in the background, then run the following command:
+
+`pitch --calibrate={color} --actual-temp=70 --actual-gravity=1.060`
+
+Pitch will run for 5 seconds, and log any readings from the color given along with recommended offsets to gravity and temperature.  These can be put in the `pitch.json`
+config file to calibrate the Tilt.  Recommendations will be positive when a Tilt is reading low, but negative when a Tilt is reading high.
+
+Example output:
+
+```
+pitch --calibrate=purple --actual-gravity=1.070 --actual-temp=50
+purple: gravity=1.035, gravity_offset=0.03500000000000014; temp_f=70, temp_offset=-20
+purple: gravity=1.035, gravity_offset=0.03500000000000014; temp_f=70, temp_offset=-20
+purple: gravity=1.035, gravity_offset=0.03500000000000014; temp_f=70, temp_offset=-20
+```
+
 
 ## Running without a Tilt or on Mac/Windows
 
