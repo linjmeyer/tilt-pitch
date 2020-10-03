@@ -35,7 +35,6 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 
 | Option                       | Purpose                      | Default               |
 | ---------------------------- | ---------------------------- | --------------------- |
-| `simulate_beacons` (bool) | Creates fake Tilt beacon events instead of scanning, useful for testing | False |
 | `queue_size` (int) | Max queue size for all Tilt event broadcasts.  Events are removed from the queue once all enabled providers have handled the event.  New events are dropped when the queue is maxed.  | `3` |
 | `webhook_urls` (array) | Adds webhook URLs for Tilt status updates | None/empty |
 | `webhook_limit_rate` (int) | Number of webhooks to fire for the limit period (per URL) | 1 |
