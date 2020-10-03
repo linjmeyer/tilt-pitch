@@ -34,15 +34,13 @@ args = parser.parse_args()
 # Load config from file, with defaults, and args
 config = PitchConfig.load(vars(args))
 
-all_providers = [
+normal_providers = [
         PrometheusCloudProvider(config),
         FileCloudProvider(config),
         InfluxDbCloudProvider(config),
         BrewfatherCustomStreamCloudProvider(config),
         BrewersFriendCustomStreamCloudProvider(config)
     ]
-
-enabled_providers = list()
 
 # Queue for holding incoming scans
 pitch_q = queue.Queue(maxsize=config.queue_size)
@@ -51,33 +49,43 @@ pitch_q = queue.Queue(maxsize=config.queue_size)
 #############################################
 
 
-def pitch_main():
-    start_message()
+def pitch_main(providers=None):
+    if providers is None:
+        providers = normal_providers
+
+    _start_message()
     # add any webhooks defined in config
-    add_webhook_providers(config)
+    webhook_providers = _get_webhook_providers(config)
+    if webhook_providers:
+        providers.extend(webhook_providers)
     # Start cloud providers
     print("Starting...")
-    for provider in all_providers:
+    enabled_providers = list()
+    for provider in providers:
         if provider.enabled():
             enabled_providers.append(provider)
-            provider_start_message = provider.start()
-            if not provider_start_message:
-                provider_start_message = ''
-            print("...started: {} {}".format(provider, provider_start_message))
+            provider__start_message = provider.start()
+            if not provider__start_message:
+                provider__start_message = ''
+            print("...started: {} {}".format(provider, provider__start_message))
+    # Start
+    _start_scanner(enabled_providers)
 
+
+def _start_scanner(enabled_providers: list):
     if config.simulate_beacons:
-        threading.Thread(name='background', target=simulate_beacons).start()
+        threading.Thread(name='background', target=_start_beacon_simulation).start()
     else:
-        scanner = BeaconScanner(beacon_callback)
+        scanner = BeaconScanner(_beacon_callback)
         scanner.start()
         print("...started: Tilt scanner")
 
     print("Ready!  Listening for beacons")
     while True:
-        handle_pitch_queue()
+        _handle_pitch_queue(enabled_providers)
 
 
-def simulate_beacons():
+def _start_beacon_simulation():
     """Simulates Beacon scanning with fake events. Useful when testing or developing
     without a beacon, or on a platform with no Bluetooth support"""
     print("...started: Tilt Beacon Simulator")
@@ -88,22 +96,22 @@ def simulate_beacons():
         'minor': 1035
     })
     while True:
-        beacon_callback(None, None, fake_packet, dict())
+        _beacon_callback(None, None, fake_packet, dict())
         time.sleep(0.25)
 
 
-def beacon_callback(bt_addr, rssi, packet, additional_info):
+def _beacon_callback(bt_addr, rssi, packet, additional_info):
     uuid = packet.uuid
     color = uuid_to_colors.get(uuid)
     if color:
         # iBeacon packets have major/minor attributes with data
         # major = degrees in F (int)
         # minor = gravity (int) - needs to be converted to float (e.g. 1035 -> 1.035)
-        tilt_status = TiltStatus(color, packet.major, get_decimal_gravity(packet.minor), config)
+        tilt_status = TiltStatus(color, packet.major, _get_decimal_gravity(packet.minor), config)
         pitch_q.put(tilt_status)
 
 
-def handle_pitch_queue():
+def _handle_pitch_queue(enabled_providers: list):
     if pitch_q.empty():
         return
 
@@ -128,19 +136,21 @@ def handle_pitch_queue():
     print(tilt_status.json())
 
 
-def get_decimal_gravity(gravity):
+def _get_decimal_gravity(gravity):
     # gravity will be an int like 1035
     # turn into decimal, like 1.035
     return gravity * .001
 
 
-def add_webhook_providers(config: PitchConfig):
+def _get_webhook_providers(config: PitchConfig):
     # Multiple webhooks can be fired, so create them dynamically and add to
     # all providers static list
+    webhook_providers = list()
     for url in config.webhook_urls:
-        all_providers.append(WebhookCloudProvider(url, config))
+        webhook_providers.append(WebhookCloudProvider(url, config))
+    return webhook_providers
 
 
-def start_message():
+def _start_message():
     f = Figlet(font='slant')
     print(f.renderText('Pitch'))
