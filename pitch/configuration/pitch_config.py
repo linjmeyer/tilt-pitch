@@ -42,6 +42,12 @@ class PitchConfig:
     def get_original_gravity(self, color: str):
         return self.__dict__.get(color + '_original_gravity')
 
+    def get_gravity_offset(self, color: str):
+        return self.__dict__.get(color + '_gravity_offset', 0)
+
+    def get_temp_offset(self, color: str):
+        return self.__dict__.get(color + '_temp_offset', 0)
+
     def get_brew_name(self, color: str):
         return self.__dict__.get(color + '_name', color)
 
