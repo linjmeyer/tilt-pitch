@@ -11,6 +11,7 @@ The Tilt hardware is impressive, but the mobile apps and TiltPi are confusing an
 The following features are implemented, planned, or will be investigated in the future:
 
 * [x] Track multiple Tilts at once
+* [x] Calibrate Tilt readings with known good values
 * [x] Prometheus Metrics
 * [x] Tilt status log file (JSON)
 * [X] InfluxDB Metrics
