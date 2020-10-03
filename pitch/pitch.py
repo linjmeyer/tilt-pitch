@@ -25,14 +25,8 @@ uuid_to_colors = {
 
 colors_to_uuid = dict((v, k) for k, v in uuid_to_colors.items())
 
-# Load config
-parser = argparse.ArgumentParser(description='')
-parser.add_argument('--simulate-beacons', dest='simulate_beacons', action='store_true',
-                    help='Creates simulated beacon signals for testing')
-
-args = parser.parse_args()
 # Load config from file, with defaults, and args
-config = PitchConfig.load(vars(args))
+config = PitchConfig.load()
 
 normal_providers = [
         PrometheusCloudProvider(config),
@@ -49,7 +43,7 @@ pitch_q = queue.Queue(maxsize=config.queue_size)
 #############################################
 
 
-def pitch_main(providers=None):
+def pitch_main(providers, timeout_seconds: int, simulate_beacons: bool, console_log: bool = True):
     if providers is None:
         providers = normal_providers
 
@@ -69,11 +63,11 @@ def pitch_main(providers=None):
                 provider__start_message = ''
             print("...started: {} {}".format(provider, provider__start_message))
     # Start
-    _start_scanner(enabled_providers)
+    _start_scanner(enabled_providers, timeout_seconds, simulate_beacons, console_log)
 
 
-def _start_scanner(enabled_providers: list):
-    if config.simulate_beacons:
+def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beacons: bool, console_log: bool):
+    if simulate_beacons:
         threading.Thread(name='background', target=_start_beacon_simulation).start()
     else:
         scanner = BeaconScanner(_beacon_callback)
@@ -81,8 +75,15 @@ def _start_scanner(enabled_providers: list):
         print("...started: Tilt scanner")
 
     print("Ready!  Listening for beacons")
+    start_time = time.time()
+    end_time = start_time + timeout_seconds
     while True:
-        _handle_pitch_queue(enabled_providers)
+        _handle_pitch_queue(enabled_providers, console_log)
+        # check timeout
+        if timeout_seconds:
+            current_time = time.time()
+            if current_time > end_time:
+                return  # stop
 
 
 def _start_beacon_simulation():
@@ -111,7 +112,7 @@ def _beacon_callback(bt_addr, rssi, packet, additional_info):
         pitch_q.put(tilt_status)
 
 
-def _handle_pitch_queue(enabled_providers: list):
+def _handle_pitch_queue(enabled_providers: list, console_log: bool):
     if pitch_q.empty():
         return
 
@@ -125,7 +126,8 @@ def _handle_pitch_queue(enabled_providers: list):
             start = time.time()
             provider.update(tilt_status)
             time_spent = time.time() - start
-            print("Updated provider {} for color {} took {:.3f} seconds".format(provider, tilt_status.color, time_spent))
+            if console_log:
+                print("Updated provider {} for color {} took {:.3f} seconds".format(provider, tilt_status.color, time_spent))
         except RateLimitedException:
             # nothing to worry about, just called this too many times (locally)
             print("Skipping update due to rate limiting for provider {} for color {}".format(provider, tilt_status.color))
@@ -133,7 +135,8 @@ def _handle_pitch_queue(enabled_providers: list):
             # todo: better logging of errors
             print(e)
     # Log it to console/stdout
-    print(tilt_status.json())
+    if console_log:
+        print(tilt_status.json())
 
 
 def _get_decimal_gravity(gravity):
