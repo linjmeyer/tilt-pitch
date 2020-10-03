@@ -213,7 +213,7 @@ only allows logging data every fifteen minutes per Tilt which Pitch adheres to. 
 
 To setup login into Brewer's Friend > Profile > Integrations > Copy Api Key
 
-![Configuring Brewfather Custom Stream URL](misc/brewfather_custom_stream.png)
+![Configuring Brewfather Custom Stream URL](misc/brewersfriend_custom_stream.png)
 
 # Examples
 
