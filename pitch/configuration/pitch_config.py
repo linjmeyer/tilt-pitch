@@ -31,8 +31,6 @@ class PitchConfig:
         # Brewersfriend
         self.brewersfriend_api_key = None
         self.brewersfriend_temp_unit = "F"
-        # Simulations
-        self.simulate_beacons = False
         # Load user inputs from config file
         self.update(data)
 
@@ -41,6 +39,12 @@ class PitchConfig:
 
     def get_original_gravity(self, color: str):
         return self.__dict__.get(color + '_original_gravity')
+
+    def get_gravity_offset(self, color: str):
+        return self.__dict__.get(color + '_gravity_offset', 0)
+
+    def get_temp_offset(self, color: str):
+        return self.__dict__.get(color + '_temp_offset', 0)
 
     def get_brew_name(self, color: str):
         return self.__dict__.get(color + '_name', color)
