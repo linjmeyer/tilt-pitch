@@ -3,7 +3,7 @@ import threading
 import time
 import queue
 from pyfiglet import Figlet
-from beacontools import BeaconScanner
+from beacontools import BeaconScanner, IBeaconAdvertisement
 from .models import TiltStatus
 from .providers import *
 from .configuration import PitchConfig
@@ -13,6 +13,7 @@ from .rate_limiter import RateLimitedException
 # Statics
 #############################################
 uuid_to_colors = {
+        "a495bb70-c5b1-4b44-b512-1370f02d74de": "yellow",
         "a495bb20-c5b1-4b44-b512-1370f02d74de": "green",
         "a495bb30-c5b1-4b44-b512-1370f02d74de": "black",
         "a495bb10-c5b1-4b44-b512-1370f02d74de": "red",
@@ -70,7 +71,7 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
     if simulate_beacons:
         threading.Thread(name='background', target=_start_beacon_simulation).start()
     else:
-        scanner = BeaconScanner(_beacon_callback)
+        scanner = BeaconScanner(_beacon_callback, packet_filter=IBeaconAdvertisement)
         scanner.start()
         print("...started: Tilt scanner")
 
@@ -102,8 +103,8 @@ def _start_beacon_simulation():
 
 
 def _beacon_callback(bt_addr, rssi, packet, additional_info):
-    uuid = packet.uuid
-    color = uuid_to_colors.get(uuid)
+    uid =  packet.uuid
+    color = "yellow" # uuid_to_colors.get(uuid)
     if color:
         # iBeacon packets have major/minor attributes with data
         # major = degrees in F (int)
