@@ -1,6 +1,7 @@
 import argparse
 import threading
 import time
+import random
 import queue
 from pyfiglet import Figlet
 from beacontools import BeaconScanner, IBeaconAdvertisement
@@ -79,6 +80,7 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
     start_time = time.time()
     end_time = start_time + timeout_seconds
     while True:
+        time.sleep(0.01)
         _handle_pitch_queue(enabled_providers, console_log)
         # check timeout
         if timeout_seconds:
@@ -92,12 +94,12 @@ def _start_beacon_simulation():
     without a beacon, or on a platform with no Bluetooth support"""
     print("...started: Tilt Beacon Simulator")
     # Using Namespace to trick a dict into a 'class'
-    fake_packet = argparse.Namespace(**{
-        'uuid': colors_to_uuid['simulated'],
-        'major': 70,
-        'minor': 1035
-    })
     while True:
+        fake_packet = argparse.Namespace(**{
+            'uuid': colors_to_uuid['simulated'],
+            'major': random.randrange(65, 75),
+            'minor': random.randrange(1035, 1040)
+        })
         _beacon_callback(None, None, fake_packet, dict())
         time.sleep(0.25)
 
