@@ -13,6 +13,7 @@ class TiltStatus(JsonSerialize):
         self.temp_celsius = TiltStatus.get_celsius(temp_fahrenheit)
         self.original_gravity = config.get_original_gravity(color)
         self.gravity = current_gravity + config.get_gravity_offset(color)
+        self.plato =  (0.005 - 616.868 + 1111.14 * self.gravity  - 630.272 * self.gravity * self.gravity + 135.997 * self.gravity * self.gravity * self.gravity)
         self.alcohol_by_volume = TiltStatus.get_alcohol_by_volume(self.original_gravity, self.gravity)
         self.apparent_attenuation = TiltStatus.get_apparent_attenuation(self.original_gravity, self.gravity)
 

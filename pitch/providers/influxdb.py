@@ -45,6 +45,7 @@ class InfluxDbCloudProvider(implements(CloudProviderBase)):
                         "temp_fahrenheit": tilt_status.temp_fahrenheit,
                         "temp_celsius": tilt_status.temp_celsius,
                         "gravity": tilt_status.gravity,
+                        "plato": tilt_status.plato,
                         "alcohol_by_volume": tilt_status.alcohol_by_volume,
                         "apparent_attenuation": tilt_status.apparent_attenuation
                     }
