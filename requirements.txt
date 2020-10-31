@@ -6,3 +6,4 @@ jsonpickle
 python-interface
 pyfiglet
 influxdb
+requests

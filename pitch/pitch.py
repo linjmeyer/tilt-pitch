@@ -1,9 +1,10 @@
 import argparse
 import threading
 import time
+import random
 import queue
 from pyfiglet import Figlet
-from beacontools import BeaconScanner
+from beacontools import BeaconScanner, IBeaconAdvertisement
 from .models import TiltStatus
 from .providers import *
 from .configuration import PitchConfig
@@ -13,6 +14,7 @@ from .rate_limiter import RateLimitedException
 # Statics
 #############################################
 uuid_to_colors = {
+        "a495bb70-c5b1-4b44-b512-1370f02d74de": "yellow",
         "a495bb20-c5b1-4b44-b512-1370f02d74de": "green",
         "a495bb30-c5b1-4b44-b512-1370f02d74de": "black",
         "a495bb10-c5b1-4b44-b512-1370f02d74de": "red",
@@ -70,7 +72,7 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
     if simulate_beacons:
         threading.Thread(name='background', target=_start_beacon_simulation).start()
     else:
-        scanner = BeaconScanner(_beacon_callback)
+        scanner = BeaconScanner(_beacon_callback, packet_filter=IBeaconAdvertisement)
         scanner.start()
         print("...started: Tilt scanner")
 
@@ -78,6 +80,7 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
     start_time = time.time()
     end_time = start_time + timeout_seconds
     while True:
+        time.sleep(0.01)
         _handle_pitch_queue(enabled_providers, console_log)
         # check timeout
         if timeout_seconds:
@@ -91,19 +94,19 @@ def _start_beacon_simulation():
     without a beacon, or on a platform with no Bluetooth support"""
     print("...started: Tilt Beacon Simulator")
     # Using Namespace to trick a dict into a 'class'
-    fake_packet = argparse.Namespace(**{
-        'uuid': colors_to_uuid['simulated'],
-        'major': 70,
-        'minor': 1035
-    })
     while True:
+        fake_packet = argparse.Namespace(**{
+            'uuid': colors_to_uuid['simulated'],
+            'major': random.randrange(65, 75),
+            'minor': random.randrange(1035, 1040)
+        })
         _beacon_callback(None, None, fake_packet, dict())
         time.sleep(0.25)
 
 
 def _beacon_callback(bt_addr, rssi, packet, additional_info):
-    uuid = packet.uuid
-    color = uuid_to_colors.get(uuid)
+    uid =  packet.uuid
+    color = "yellow" # uuid_to_colors.get(uuid)
     if color:
         # iBeacon packets have major/minor attributes with data
         # major = degrees in F (int)
