@@ -48,6 +48,7 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | `influxdb_port` (int) | Port for InfluxDB database | None/empty |
 | `influxdb_database` (str) | Name of InfluxDB database | None/empty |
 | `influxdb_username` (str) | Username for InfluxDB | None/empty |
+| `influxdb_password` (str) | Password for InfluxDB | None/empty |
 | `influxdb_batch_size` (int) | Number of events to batch.  Data is not saved to InfluxDB until this threshold is met | `10` |
 | `influxdb_timeout_seconds` (int) | Timeout of InfluxDB reads/writes | `5` |
 | `brewfather_custom_stream_url` (str) | URL of Brewfather Custom Stream | None/empty |
