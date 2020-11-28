@@ -3,7 +3,7 @@ import threading
 import time
 import queue
 from pyfiglet import Figlet
-from beacontools import BeaconScanner
+from beacontools import BeaconScanner, IBeaconAdvertisement
 from .models import TiltStatus
 from .providers import *
 from .configuration import PitchConfig
@@ -70,7 +70,7 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
     if simulate_beacons:
         threading.Thread(name='background', target=_start_beacon_simulation).start()
     else:
-        scanner = BeaconScanner(_beacon_callback)
+        scanner = BeaconScanner(_beacon_callback,packet_filter=IBeaconAdvertisement)
         scanner.start()
         print("...started: Tilt scanner")
 
