@@ -4,6 +4,9 @@ import os
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open('requirements.txt', 'rt') as reqs_file:
+    REQUIREMENTS = reqs_file.readlines()
+
 setuptools.setup(
     name="tilt-pitch",
     version=os.getenv('PITCH_VERSION', "0.0.1"),
