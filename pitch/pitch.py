@@ -1,4 +1,5 @@
 import argparse
+import signal
 import threading
 import time
 import queue
@@ -71,20 +72,28 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
         threading.Thread(name='background', target=_start_beacon_simulation).start()
     else:
         scanner = BeaconScanner(_beacon_callback,packet_filter=IBeaconAdvertisement)
-        scanner.start()
+        scanner.start()    
+        signal.signal(signal.SIGTERM, _trigger_graceful_termination)
         print("...started: Tilt scanner")
+        
 
     print("Ready!  Listening for beacons")
     start_time = time.time()
     end_time = start_time + timeout_seconds
-    while True:
-        _handle_pitch_queue(enabled_providers, console_log)
-        # check timeout
-        if timeout_seconds:
-            current_time = time.time()
-            if current_time > end_time:
-                return  # stop
-
+    try:
+        while True:
+            _handle_pitch_queue(enabled_providers, console_log)
+            # check timeout
+            if timeout_seconds:
+                current_time = time.time()
+                if current_time > end_time:
+                    return  # stop
+    except KeyboardInterrupt as e:
+        scanner.stop()
+        print("...stopped: Tilt Scanner (keyboard interrupt)")
+    except Exception as e:
+        scanner.stop()
+        print("...stopped: Tilt Scanner ({})".format(e))
 
 def _start_beacon_simulation():
     """Simulates Beacon scanning with fake events. Useful when testing or developing
@@ -157,3 +166,6 @@ def _get_webhook_providers(config: PitchConfig):
 def _start_message():
     f = Figlet(font='slant')
     print(f.renderText('Pitch'))
+
+def _trigger_graceful_termination(signalNumber, frame):
+    raise Exception("Termination signal received")
