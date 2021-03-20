@@ -1,0 +1,7 @@
+{
+    "grainfather_custom_stream_urls": {
+        "purple": "https://community.grainfather.com/iot/my-grainfather-url/custom",
+        "blue": "https://community.grainfather.com/iot/my-grainfather-url-2/custom"
+    },
+    "grainfather_temp_unit": "F"
+}
