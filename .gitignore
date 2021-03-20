@@ -3,6 +3,7 @@ log.json
 pitch_log.json
 pitch.json
 .idea/
+.vscode/
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/pycharm,python

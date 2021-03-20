@@ -3,6 +3,7 @@ import signal
 import threading
 import time
 import queue
+import logging
 from pyfiglet import Figlet
 from beacontools import BeaconScanner, IBeaconAdvertisement
 from .models import TiltStatus
@@ -34,11 +35,15 @@ normal_providers = [
         FileCloudProvider(config),
         InfluxDbCloudProvider(config),
         BrewfatherCustomStreamCloudProvider(config),
-        BrewersFriendCustomStreamCloudProvider(config)
+        BrewersFriendCustomStreamCloudProvider(config),
+        GrainfatherCustomStreamCloudProvider(config)
     ]
 
 # Queue for holding incoming scans
 pitch_q = queue.Queue(maxsize=config.queue_size)
+
+# Global logger
+log = logging.getLogger(__name__)
 
 #############################################
 #############################################
@@ -69,7 +74,8 @@ def pitch_main(providers, timeout_seconds: int, simulate_beacons: bool, console_
 
 def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beacons: bool, console_log: bool):
     if simulate_beacons:
-        threading.Thread(name='background', target=_start_beacon_simulation).start()
+        # Set daemon true so this thread dies when the parent process/thread dies
+        threading.Thread(name='background', target=_start_beacon_simulation, daemon=True).start()
     else:
         scanner = BeaconScanner(_beacon_callback,packet_filter=IBeaconAdvertisement)
         scanner.start()    
@@ -89,10 +95,12 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
                 if current_time > end_time:
                     return  # stop
     except KeyboardInterrupt as e:
-        scanner.stop()
+        if not simulate_beacons:
+            scanner.stop()
         print("...stopped: Tilt Scanner (keyboard interrupt)")
     except Exception as e:
-        scanner.stop()
+        if not simulate_beacons:
+            scanner.stop()
         print("...stopped: Tilt Scanner ({})".format(e))
 
 def _start_beacon_simulation():
@@ -142,7 +150,7 @@ def _handle_pitch_queue(enabled_providers: list, console_log: bool):
             print("Skipping update due to rate limiting for provider {} for color {}".format(provider, tilt_status.color))
         except Exception as e:
             # todo: better logging of errors
-            print(e)
+            log.exception(e)
     # Log it to console/stdout
     if console_log:
         print(tilt_status.json())

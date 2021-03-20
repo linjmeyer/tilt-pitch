@@ -31,6 +31,9 @@ class PitchConfig:
         # Brewersfriend
         self.brewersfriend_api_key = None
         self.brewersfriend_temp_unit = "F"
+        # Grainfather
+        self.grainfather_custom_stream_urls = None
+        self.grainfather_temp_unit = "F"
         # Load user inputs from config file
         self.update(data)
 

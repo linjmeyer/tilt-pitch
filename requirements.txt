@@ -1,7 +1,7 @@
-beacontools[scan]
-pybluez
 prometheus_client
 jsonpickle
 python-interface
 pyfiglet
 influxdb
+beacontools[scan]
+pybluez

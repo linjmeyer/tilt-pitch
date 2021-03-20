@@ -19,7 +19,7 @@ The following features are implemented, planned, or will be investigated in the 
 * [X] Webhooks for supporting generic integrations (similar to Tilt's Cloud Logging feature)
 * [X] Gravity, original gravity, ABV, temperature and apparent attenuation
 * [X] Custom Beer/brew names (e.g. purple tilt = Pumpkin Ale)
-* [X] Brewing Cloud Services (Brewfather, Brewer's Friend, more can be requested!)
+* [X] Brewing Cloud Services (Brewfather, Brewer's Friend, Grainfather, more can be requested!)
 * [ ] Google Sheets (using any Google Drive)
 
 # Installation
@@ -34,29 +34,31 @@ Pitch can be run using: `python3 -m pitch`
 
 Custom configurations can be used by creating a file `pitch.json` in the working directory you are running Pitch from.
 
-| Option                       | Purpose                      | Default               |
-| ---------------------------- | ---------------------------- | --------------------- |
-| `queue_size` (int) | Max queue size for all Tilt event broadcasts.  Events are removed from the queue once all enabled providers have handled the event.  New events are dropped when the queue is maxed.  | `3` |
-| `webhook_urls` (array) | Adds webhook URLs for Tilt status updates | None/empty |
-| `webhook_limit_rate` (int) | Number of webhooks to fire for the limit period (per URL) | 1 |
-| `webhook_limit_period` (int) | Period for rate limiting (in seconds) | 1 |
-| `log_file_path` (str) | Path to file for JSON event logging | `pitch_log.json` |
-| `log_file_max_mb` (int) | Max JSON log file size in megabytes | `10` |
-| `prometheus_enabled` (bool) | Enable/Disable Prometheus metrics | `true` |
-| `prometheus_port` (int) | Port number for Prometheus Metrics | `8000` |
-| `influxdb_hostname` (str) | Hostname for InfluxDB database | None/empty |
-| `influxdb_port` (int) | Port for InfluxDB database | None/empty |
-| `influxdb_database` (str) | Name of InfluxDB database | None/empty |
-| `influxdb_username` (str) | Username for InfluxDB | None/empty |
-| `influxdb_password` (str) | Password for InfluxDB | None/empty |
-| `influxdb_batch_size` (int) | Number of events to batch.  Data is not saved to InfluxDB until this threshold is met | `10` |
-| `influxdb_timeout_seconds` (int) | Timeout of InfluxDB reads/writes | `5` |
-| `brewfather_custom_stream_url` (str) | URL of Brewfather Custom Stream | None/empty |
-| `brewersfriend_api_key` (str) | API Key for Brewer's Friend | None/empty |
-| `{color}_name` (str) | Name of your brew, where {color} is the color of the Tilt (purple, red, etc) | Color (e.g. purple, red, etc) |
-| `{color}_original_gravity` (float) | Original gravity of the beer, where {color} is the color of the Tilt (purple, red, etc) | None/empty |
-| `{color}_temp_offset` (int) | Temperature offset to calibrate Tilt temperatures with a secondary reading [See Calibration](#Calibration) | 0 |
-| `{color}_gravity_offset` (float) | Gravity offset to calibrate Tilt temperatures with a secondary reading [See Calibration](#Calibration)  | 0 |
+| Option                       | Purpose                      | Default               | Example               |
+| ---------------------------- | ---------------------------- | --------------------- | --------------------- |
+| `queue_size` (int) | Max queue size for all Tilt event broadcasts.  Events are removed from the queue once all enabled providers have handled the event.  New events are dropped when the queue is maxed.  | `3` | No example yet (PRs welcome!) |
+| `webhook_urls` (array) | Adds webhook URLs for Tilt status updates | None/empty | No example yet (PRs welcome!) |
+| `webhook_limit_rate` (int) | Number of webhooks to fire for the limit period (per URL) | 1 | No example yet (PRs welcome!) |
+| `webhook_limit_period` (int) | Period for rate limiting (in seconds) | 1 | No example yet (PRs welcome!) |
+| `log_file_path` (str) | Path to file for JSON event logging | `pitch_log.json` | No example yet (PRs welcome!) |
+| `log_file_max_mb` (int) | Max JSON log file size in megabytes | `10` | No example yet (PRs welcome!) |
+| `prometheus_enabled` (bool) | Enable/Disable Prometheus metrics | `true` | No example yet (PRs welcome!) |
+| `prometheus_port` (int) | Port number for Prometheus Metrics | `8000` | No example yet (PRs welcome!) |
+| `influxdb_hostname` (str) | Hostname for InfluxDB database | None/empty | No example yet (PRs welcome!) |
+| `influxdb_port` (int) | Port for InfluxDB database | None/empty | No example yet (PRs welcome!) |
+| `influxdb_database` (str) | Name of InfluxDB database | None/empty | No example yet (PRs welcome!) |
+| `influxdb_username` (str) | Username for InfluxDB | None/empty | No example yet (PRs welcome!) |
+| `influxdb_password` (str) | Password for InfluxDB | None/empty | No example yet (PRs welcome!) |
+| `influxdb_batch_size` (int) | Number of events to batch.  Data is not saved to InfluxDB until this threshold is met | `10` | No example yet (PRs welcome!) |
+| `influxdb_timeout_seconds` (int) | Timeout of InfluxDB reads/writes | `5` | No example yet (PRs welcome!) |
+| `brewfather_custom_stream_url` (str) | URL of Brewfather Custom Stream | None/empty | No example yet (PRs welcome!) |
+| `grainfather_custom_stream_urls` (dict) | Dict of color (key) and URLs (value) | None/empty | [Example config]("examples/grainfather/pitch.json") |
+| `grainfather_temp_unit` (str) | Temperature unit `F` or `C` for Grainfather | `F` |  [Example config]("examples/grainfather/pitch.json") |
+| `brewersfriend_api_key` (str) | API Key for Brewer's Friend | None/empty | No example yet (PRs welcome!) |
+| `{color}_name` (str) | Name of your brew, where {color} is the color of the Tilt (purple, red, etc) | Color (e.g. purple, red, etc) | No example yet (PRs welcome!) |
+| `{color}_original_gravity` (float) | Original gravity of the beer, where {color} is the color of the Tilt (purple, red, etc) | None/empty | No example yet (PRs welcome!) |
+| `{color}_temp_offset` (int) | Temperature offset to calibrate Tilt temperatures with a secondary reading [See Calibration](#Calibration) | 0 | No example yet (PRs welcome!) |
+| `{color}_gravity_offset` (float) | Gravity offset to calibrate Tilt temperatures with a secondary reading [See Calibration](#Calibration)  | 0 | No example yet (PRs welcome!) |
 
 ## Rate Limiting and Batching
 
