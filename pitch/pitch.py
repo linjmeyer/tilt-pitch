@@ -42,9 +42,6 @@ normal_providers = [
 # Queue for holding incoming scans
 pitch_q = queue.Queue(maxsize=config.queue_size)
 
-# Global logger
-log = logging.getLogger(__name__)
-
 #############################################
 #############################################
 
@@ -150,7 +147,7 @@ def _handle_pitch_queue(enabled_providers: list, console_log: bool):
             print("Skipping update due to rate limiting for provider {} for color {}".format(provider, tilt_status.color))
         except Exception as e:
             # todo: better logging of errors
-            log.exception(e)
+            print(e)
     # Log it to console/stdout
     if console_log:
         print(tilt_status.json())

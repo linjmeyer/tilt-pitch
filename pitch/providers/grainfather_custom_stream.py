@@ -33,7 +33,7 @@ class GrainfatherCustomStreamCloudProvider(implements(CloudProviderBase)):
         if tilt_status.color not in self.color_urls.keys():
             return
         url = self.color_urls[tilt_status.color]
-        #self.rate_limiter.approve(tilt_status.color)
+        self.rate_limiter.approve(tilt_status.color)
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         payload = self._get_payload(tilt_status)
         result = requests.post(url, headers=headers, data=json.dumps(payload))
