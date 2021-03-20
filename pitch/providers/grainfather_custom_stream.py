@@ -60,8 +60,9 @@ class GrainfatherCustomStreamCloudProvider(implements(CloudProviderBase)):
     @staticmethod
     def _normalize_color_keys(color_urls):
         normalized_colors = dict()
-        for color in color_urls:
-            normalized_colors[color.lower()] = color_urls[color]
+        if color_urls is not None:
+            for color in color_urls:
+                normalized_colors[color.lower()] = color_urls[color]
 
         return normalized_colors
 
