@@ -65,7 +65,7 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 A single Tilt can emit several events per second.  To avoid overloading integrations with data events are queued with a max queue size set via the `queue_size`
 configuration parameter.  If new events are broadcast from a Tilt and the queue is full, they are ignored.  Events are removed from the queue once all enabled
 providers have handled the event.  Additionally some providers may implement their own queueing or rate limiting.  InfluxDB for example waits until a certain 
-queue size is met before sending a batch of events, and the Brewfather integration will only send updates every fifteen minutes.
+queue size is met before sending a batch of events, and the Brewfather and Grainfather integrations will only send updates every fifteen minutes.
 
 Refer to the above configuration and the integration list below for details on how this works for different integrations.
 
@@ -103,6 +103,7 @@ beacon events instead of scanning for Tilt events via Bluetooth.
 * [JSON Log File](#JSON-Log-File)
 * [Brewfather](#Brewfather)
 * [Brewer's Friend](#BrewersFriend)
+* [Grainfather](#Grainfather)
 
 Don't see one you want, send a PR implementing [CloudProviderBase](https://github.com/linjmeyer/tilt-pitch/blob/master/pitch/abstractions/cloud_provider.py)
 
@@ -208,6 +209,14 @@ only allows logging data every fifteen minutes per Tilt which Pitch adheres to. 
 To setup login into Brewfather > Settings > PowerUps > Enable Custom Stream > Copy the URL into your Pitch config
 
 ![Configuring Brewfather Custom Stream URL](misc/brewfather_custom_stream.png)
+
+## Grainfather
+
+Tilt data can be logged to Grainfather using their Custom Fermenation Device feature.  See [Configuration section](#Configuration) for setting this up in the Pitch config.  Grainfather only allows logging data ever fifteen minutes per Tilt which Pitch adheres to.  You must create a custom device per Tilt and save each URL into the Pitch config.
+
+To setup login into Grainfather > My Equipment > Add Fermenation Device > Set the name and save > Press the "i" (info) button next to the device > Copy the URL into pitch.config
+
+![Configuring Brewfather Custom Stream URL](misc/grainfather_custom_stream.png)
 
 ## Brewer's Friend
 
