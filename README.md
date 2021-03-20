@@ -52,8 +52,8 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | `influxdb_batch_size` (int) | Number of events to batch.  Data is not saved to InfluxDB until this threshold is met | `10` | No example yet (PRs welcome!) |
 | `influxdb_timeout_seconds` (int) | Timeout of InfluxDB reads/writes | `5` | No example yet (PRs welcome!) |
 | `brewfather_custom_stream_url` (str) | URL of Brewfather Custom Stream | None/empty | No example yet (PRs welcome!) |
-| `grainfather_custom_stream_urls` (dict) | Dict of color (key) and URLs (value) | None/empty | [Example config]("examples/grainfather/pitch.json") |
-| `grainfather_temp_unit` (str) | Temperature unit `F` or `C` for Grainfather | `F` |  [Example config]("examples/grainfather/pitch.json") |
+| `grainfather_custom_stream_urls` (dict) | Dict of color (key) and URLs (value) | None/empty | [Example config](examples/grainfather/pitch.json) |
+| `grainfather_temp_unit` (str) | Temperature unit `F` or `C` for Grainfather | `F` |  [Example config](examples/grainfather/pitch.json) |
 | `brewersfriend_api_key` (str) | API Key for Brewer's Friend | None/empty | No example yet (PRs welcome!) |
 | `{color}_name` (str) | Name of your brew, where {color} is the color of the Tilt (purple, red, etc) | Color (e.g. purple, red, etc) | No example yet (PRs welcome!) |
 | `{color}_original_gravity` (float) | Original gravity of the beer, where {color} is the color of the Tilt (purple, red, etc) | None/empty | No example yet (PRs welcome!) |
