@@ -116,6 +116,12 @@ def _start_beacon_simulation():
 
 
 def _beacon_callback(bt_addr, rssi, packet, additional_info):
+    # When queue is full broadcasts should be ignored
+    # this can happen because Tilt broadcasts very frequently, while Pitch must make network calls
+    # to forward Tilt status info on and this can cause Pitch to fall behind
+    if pitch_q.full():
+        return
+
     uuid = packet.uuid
     color = uuid_to_colors.get(uuid)
     if color:
@@ -123,11 +129,12 @@ def _beacon_callback(bt_addr, rssi, packet, additional_info):
         # major = degrees in F (int)
         # minor = gravity (int) - needs to be converted to float (e.g. 1035 -> 1.035)
         tilt_status = TiltStatus(color, packet.major, _get_decimal_gravity(packet.minor), config)
-        pitch_q.put(tilt_status)
+        pitch_q.put_nowait(tilt_status)
 
 
 def _handle_pitch_queue(enabled_providers: list, console_log: bool):
-    if pitch_q.empty():
+    if config.queue_empty_sleep_seconds > 0 and pitch_q.empty():
+        time.sleep(config.queue_empty_sleep_seconds)
         return
 
     if pitch_q.full():

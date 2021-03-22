@@ -37,6 +37,7 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | Option                       | Purpose                      | Default               | Example               |
 | ---------------------------- | ---------------------------- | --------------------- | --------------------- |
 | `queue_size` (int) | Max queue size for all Tilt event broadcasts.  Events are removed from the queue once all enabled providers have handled the event.  New events are dropped when the queue is maxed.  | `3` | No example yet (PRs welcome!) |
+| `queue_empty_sleep_seconds` (int) | Time in seconds Pitch will sleep when the queue reaches 0. The higher the value the less CPU time Pitch uses.  Can be 0 or negative (this disables sleep and Pitch will always run). | `1` | No example yet (PRs welcome!) |
 | `webhook_urls` (array) | Adds webhook URLs for Tilt status updates | None/empty | No example yet (PRs welcome!) |
 | `webhook_limit_rate` (int) | Number of webhooks to fire for the limit period (per URL) | 1 | No example yet (PRs welcome!) |
 | `webhook_limit_period` (int) | Period for rate limiting (in seconds) | 1 | No example yet (PRs welcome!) |

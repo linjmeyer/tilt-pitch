@@ -7,6 +7,7 @@ class PitchConfig:
     def __init__(self, data: dict):
         # Queue
         self.queue_size = 3
+        self.queue_empty_sleep_seconds = 1
         # Webhook
         self.webhook_urls = list()
         self.webhook_limit_rate = 1
