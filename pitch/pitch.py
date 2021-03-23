@@ -129,7 +129,12 @@ def _beacon_callback(bt_addr, rssi, packet, additional_info):
         # major = degrees in F (int)
         # minor = gravity (int) - needs to be converted to float (e.g. 1035 -> 1.035)
         tilt_status = TiltStatus(color, packet.major, _get_decimal_gravity(packet.minor), config)
-        pitch_q.put_nowait(tilt_status)
+        if not tilt_status.temp_valid:
+            print("Ignoring broadcast due to invalid temperature: {}F".format(tilt_status.temp_fahrenheit))
+        elif not tilt_status.gravity_valid:
+            print("Ignoring broadcast due to invalid gravity: " + tilt_status.gravity)
+        else:
+            pitch_q.put_nowait(tilt_status)
 
 
 def _handle_pitch_queue(enabled_providers: list, console_log: bool):

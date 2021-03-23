@@ -21,6 +21,9 @@ jobs:
         sudo apt-get install libbluetooth-dev -y
         python -m pip install --upgrade pip setuptools wheel twine
         pip install -r requirements.txt
+    - name: Run Tests
+      run: |
+        python -m unittest discover test 
     - name: Build and publish
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
       env:
