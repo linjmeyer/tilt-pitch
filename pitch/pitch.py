@@ -20,8 +20,9 @@ uuid_to_colors = {
         "a495bb10-c5b1-4b44-b512-1370f02d74de": "red",
         "a495bb60-c5b1-4b44-b512-1370f02d74de": "blue",
         "a495bb50-c5b1-4b44-b512-1370f02d74de": "orange",
-        "a495bb70-c5b1-4b44-b512-1370f02d74de": "pink",
+        "a495bb70-c5b1-4b44-b512-1370f02d74de": "yellow",
         "a495bb40-c5b1-4b44-b512-1370f02d74de": "purple",
+        "a495bb80-c5b1-4b44-b512-1370f02d74de": "pink",
         "a495bb40-c5b1-4b44-b512-1370f02d74df": "simulated"  # reserved for fake beacons during simulation mode
     }
 
