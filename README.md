@@ -60,6 +60,7 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | `grainfather_custom_stream_urls` (dict) | Dict of color (key) and URLs (value) | None/empty | [Example config](examples/grainfather/pitch.json) |
 | `grainfather_temp_unit` (str) | Temperature unit `F` or `C` for Grainfather | `F` |  [Example config](examples/grainfather/pitch.json) |
 | `brewersfriend_api_key` (str) | API Key for Brewer's Friend | None/empty | No example yet (PRs welcome!) |
+| `taplistio_url` (str) | URL of Taplist.io Tilt reporting webhook | None/empty | No example |
 | `{color}_name` (str) | Name of your brew, where {color} is the color of the Tilt (purple, red, etc) | Color (e.g. purple, red, etc) | No example yet (PRs welcome!) |
 | `{color}_original_gravity` (float) | Original gravity of the beer, where {color} is the color of the Tilt (purple, red, etc) | None/empty | No example yet (PRs welcome!) |
 | `{color}_temp_offset` (int) | Temperature offset to calibrate Tilt temperatures with a secondary reading [See Calibration](#Calibration) | 0 | No example yet (PRs welcome!) |
@@ -109,6 +110,7 @@ beacon events instead of scanning for Tilt events via Bluetooth.
 * [Brewfather](#Brewfather)
 * [Brewer's Friend](#BrewersFriend)
 * [Grainfather](#Grainfather)
+* [Taplist.io](#taplistio)
 
 Don't see one you want, send a PR implementing [CloudProviderBase](https://github.com/linjmeyer/tilt-pitch/blob/master/pitch/abstractions/cloud_provider.py)
 
@@ -231,6 +233,12 @@ only allows logging data every fifteen minutes per Tilt which Pitch adheres to. 
 To setup login into Brewer's Friend > Profile > Integrations > Copy Api Key
 
 ![Configuring Brewfather Custom Stream URL](misc/brewersfriend_custom_stream.png)
+
+## Taplist.io
+
+Tilt data can be logged to [Taplist.io](https://taplist.io/) using the Tilt Integration feature.
+
+To setup, log into Taplist.io and visit _Account_ > _Integrations_ > _Tilt Hydrometer_. Copy the _Webhook URL_ value into your Pitch config as `taplistio_url`.
 
 # Examples
 

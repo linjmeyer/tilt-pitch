@@ -34,6 +34,8 @@ class PitchConfig:
         # Brewfather
         self.brewfather_custom_stream_url = None
         self.brewfather_custom_stream_temp_unit = "F"
+        # Taplist.io
+        self.taplistio_url = None
         # Brewersfriend
         self.brewersfriend_api_key = None
         self.brewersfriend_temp_unit = "F"
