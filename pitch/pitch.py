@@ -37,7 +37,8 @@ normal_providers = [
         InfluxDbCloudProvider(config),
         BrewfatherCustomStreamCloudProvider(config),
         BrewersFriendCustomStreamCloudProvider(config),
-        GrainfatherCustomStreamCloudProvider(config)
+        GrainfatherCustomStreamCloudProvider(config),
+        TaplistIOCloudProvider(config)
     ]
 
 # Queue for holding incoming scans
