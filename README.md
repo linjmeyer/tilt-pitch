@@ -16,7 +16,7 @@ The following features are implemented, planned, or will be investigated in the 
 * [x] Calibrate Tilt readings with known good values
 * [x] Prometheus Metrics
 * [x] Tilt status log file (JSON)
-* [X] InfluxDB Metrics
+* [X] InfluxDB 1.0 and 2.0 Metrics 
 * [X] Multiple logging and metric sources simultaneously
 * [X] Webhooks for supporting generic integrations (similar to Tilt's Cloud Logging feature)
 * [X] Gravity, original gravity, ABV, temperature and apparent attenuation
@@ -57,6 +57,10 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | `influxdb_username` (str) | Username for InfluxDB | None/empty | No example yet (PRs welcome!) |
 | `influxdb_password` (str) | Password for InfluxDB | None/empty | No example yet (PRs welcome!) |
 | `influxdb_batch_size` (int) | Number of events to batch.  Data is not saved to InfluxDB until this threshold is met | `10` | No example yet (PRs welcome!) |
+| `influxdb2_url` (str) | URL of InfluxDB 2.0 database | None/empty | `http://localhost:8086` |
+| `influxdb2_token` (str) | Token for writing to InfluxDB 2.0 | None/empty | a base64 encoded string |
+| `influxdb2_org` (str) | Org for InfluxDB 2.0 database | None/empty | `org_name` |
+| `influxdb2_bucket` (str) | Bucket to write data to in InfluxDB 2.0 | None/empty | `bucket_name`
 | `influxdb_timeout_seconds` (int) | Timeout of InfluxDB reads/writes | `5` | No example yet (PRs welcome!) |
 | `brewfather_custom_stream_url` (str) | URL of Brewfather Custom Stream | None/empty | No example yet (PRs welcome!) |
 | `grainfather_custom_stream_urls` (dict) | Dict of color (key) and URLs (value) | None/empty | [Example config](examples/grainfather/pitch.json) |
@@ -209,6 +213,15 @@ and can be queried with something like:
 ```sql
 SELECT mean("gravity") AS "mean_gravity" FROM "pitch"."autogen"."tilt" WHERE time > :dashboardTime: AND time < :upperDashboardTime: AND "name"='Pumpkin Ale' GROUP BY time(:interval:) FILL(previous)
 ```
+
+## InfluxDB 2.0 Metrics
+
+Metrics can be sent to an InfluxDB 2.0 database. See [Configuration section](#Configuration) for details on setting it up.  Pitch does not create the bucket.
+This integration uses the same batching logic, output format, and configuration as the 1.0 integration above.
+
+Shared configuration values:
+- `influxdb_timeout`
+- `influxdb_batch_size`
 
 ## Brewfather
 

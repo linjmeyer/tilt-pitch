@@ -3,5 +3,6 @@ jsonpickle
 python-interface
 pyfiglet
 influxdb
+influxdb-client[ciso]
 beacontools[scan]
 pybluez
