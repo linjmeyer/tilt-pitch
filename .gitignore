@@ -4,6 +4,7 @@ pitch_log.json
 pitch.json
 .idea/
 .vscode/
+.DS_Store
 
 # Keep pitch.json files in example dir
 !examples/**/pitch.json

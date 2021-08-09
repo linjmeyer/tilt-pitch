@@ -135,7 +135,7 @@ def _beacon_callback(bt_addr, rssi, packet, additional_info):
         if not tilt_status.temp_valid:
             print("Ignoring broadcast due to invalid temperature: {}F".format(tilt_status.temp_fahrenheit))
         elif not tilt_status.gravity_valid:
-            print("Ignoring broadcast due to invalid gravity: " + tilt_status.gravity)
+            print("Ignoring broadcast due to invalid gravity: " + str(tilt_status.gravity))
         else:
             pitch_q.put_nowait(tilt_status)
 
