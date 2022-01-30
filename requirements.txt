@@ -7,3 +7,4 @@ influxdb
 influxdb-client[ciso]
 beacontools[scan]
 pybluez
+retry
