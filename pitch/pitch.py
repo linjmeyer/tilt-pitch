@@ -4,6 +4,7 @@ import threading
 import time
 import queue
 import logging
+from retry import retry
 from pyfiglet import Figlet
 from beacontools import BeaconScanner, IBeaconAdvertisement
 from .models import TiltStatus
@@ -72,6 +73,7 @@ def pitch_main(providers, timeout_seconds: int, simulate_beacons: bool, console_
     _start_scanner(enabled_providers, timeout_seconds, simulate_beacons, console_log)
 
 
+@retry(Exception, delay=2, backoff=2)
 def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beacons: bool, console_log: bool):
     if simulate_beacons:
         # Set daemon true so this thread dies when the parent process/thread dies
