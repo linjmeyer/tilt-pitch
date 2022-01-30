@@ -75,6 +75,7 @@ def pitch_main(providers, timeout_seconds: int, simulate_beacons: bool, console_
 
 @retry(Exception, delay=2, backoff=2)
 def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beacons: bool, console_log: bool):
+    scanner = None
     if simulate_beacons:
         # Set daemon true so this thread dies when the parent process/thread dies
         threading.Thread(name='background', target=_start_beacon_simulation, daemon=True).start()
@@ -90,7 +91,7 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
     end_time = start_time + timeout_seconds
     try:
         while True:
-            _handle_pitch_queue(enabled_providers, console_log)
+            _handle_pitch_queue(scanner, enabled_providers, console_log)
             # check timeout
             if timeout_seconds:
                 current_time = time.time()
@@ -142,7 +143,11 @@ def _beacon_callback(bt_addr, rssi, packet, additional_info):
             pitch_q.put_nowait(tilt_status)
 
 
-def _handle_pitch_queue(enabled_providers: list, console_log: bool):
+def _handle_pitch_queue(scanner, enabled_providers: list, console_log: bool):
+    if scanner and not scanner.scanning:
+        scanner.stop()
+        raise Exception("Detected error, scanner is no longer scanning")
+        
     if config.queue_empty_sleep_seconds > 0 and pitch_q.empty():
         time.sleep(config.queue_empty_sleep_seconds)
         return
