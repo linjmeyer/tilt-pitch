@@ -4,6 +4,7 @@ import threading
 import time
 import queue
 import logging
+import datetime
 from retry import retry
 from pyfiglet import Figlet
 from beacontools import BeaconScanner, IBeaconAdvertisement
@@ -45,6 +46,8 @@ normal_providers = [
 
 # Queue for holding incoming scans
 pitch_q = queue.Queue(maxsize=config.queue_size)
+pitch_q_last_updated = datetime.datetime.now()
+pitch_q_duration_restart = 60 * 60  # 60 minutes without queue restart
 
 #############################################
 #############################################
@@ -140,9 +143,17 @@ def _beacon_callback(bt_addr, rssi, packet, additional_info):
             print("Ignoring broadcast due to invalid gravity: " + str(tilt_status.gravity))
         else:
             pitch_q.put_nowait(tilt_status)
+            pitch_q_last_updated = datetime.datetime.now()
 
 
-def _handle_pitch_queue(enabled_providers: list, console_log: bool):        
+def _handle_pitch_queue(enabled_providers: list, console_log: bool):  
+    duration_since_beacon = datetime.datetime.now() - pitch_q_last_updated
+    duration_since_beacon_seconds = duration_since_beacon.total_seconds()
+    if duration_since_beacon_seconds > pitch_q_duration_restart:
+        error = "No new beacons in {} seconds, will restart scanner".format(duration_since_beacon_seconds)
+        print(error)
+        raise Exception(error)
+
     if config.queue_empty_sleep_seconds > 0 and pitch_q.empty():
         time.sleep(config.queue_empty_sleep_seconds)
         return
