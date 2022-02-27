@@ -47,13 +47,12 @@ normal_providers = [
 # Queue for holding incoming scans
 pitch_q = queue.Queue(maxsize=config.queue_size)
 pitch_q_last_updated = datetime.datetime.now()
-pitch_q_duration_restart = 60 * 60  # 60 minutes without queue restart
 
 #############################################
 #############################################
 
 
-def pitch_main(providers, timeout_seconds: int, simulate_beacons: bool, console_log: bool = True):
+def pitch_main(providers, timeout_seconds: int, simulate_beacons: bool, auto_stop_minutes: int, console_log: bool = True):
     if providers is None:
         providers = normal_providers
 
@@ -73,11 +72,12 @@ def pitch_main(providers, timeout_seconds: int, simulate_beacons: bool, console_
                 provider__start_message = ''
             print("...started: {} {}".format(provider, provider__start_message))
     # Start
-    _start_scanner(enabled_providers, timeout_seconds, simulate_beacons, console_log)
+    _start_scanner(enabled_providers, timeout_seconds, simulate_beacons, console_log, auto_stop_minutes)
 
 
 @retry(Exception, delay=2, backoff=2)
-def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beacons: bool, console_log: bool):
+def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beacons: bool, console_log: bool,
+                   auto_stop_minutes: int):
     if simulate_beacons:
         # Set daemon true so this thread dies when the parent process/thread dies
         threading.Thread(name='background', target=_start_beacon_simulation, daemon=True).start()
@@ -88,12 +88,15 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
         print("...started: Tilt scanner")
         
 
-    print("Ready!  Listening for beacons")
+    start_msg = "Ready!  Listening for beacons"
+    if auto_stop_minutes:
+        start_msg = start_msg + f".  Will self destruct after {auto_stop_minutes}m of no beacons received"
+    print(start_msg)
     start_time = time.time()
     end_time = start_time + timeout_seconds
     try:
         while True:
-            _handle_pitch_queue(enabled_providers, console_log)
+            _handle_pitch_queue(enabled_providers, console_log, auto_stop_minutes)
             # check timeout
             if timeout_seconds:
                 current_time = time.time()
@@ -146,13 +149,13 @@ def _beacon_callback(bt_addr, rssi, packet, additional_info):
             pitch_q_last_updated = datetime.datetime.now()
 
 
-def _handle_pitch_queue(enabled_providers: list, console_log: bool):  
+def _handle_pitch_queue(enabled_providers: list, console_log: bool, auto_stop_minutes: int):
     duration_since_beacon = datetime.datetime.now() - pitch_q_last_updated
-    duration_since_beacon_seconds = duration_since_beacon.total_seconds()
-    if duration_since_beacon_seconds > pitch_q_duration_restart:
-        error = "No new beacons in {} seconds, will restart scanner".format(duration_since_beacon_seconds)
+    duration_since_beacon_minutes = duration_since_beacon.total_seconds() / 60
+    if auto_stop_minutes > 0 and auto_stop_minutes < duration_since_beacon_minutes:
+        error = "No new beacons in {}m, will stop pitch".format(duration_since_beacon_minutes)
         print(error)
-        raise Exception(error)
+        exit(0)
 
     if config.queue_empty_sleep_seconds > 0 and pitch_q.empty():
         time.sleep(config.queue_empty_sleep_seconds)

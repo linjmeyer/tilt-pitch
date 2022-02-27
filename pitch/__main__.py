@@ -14,7 +14,8 @@ def _get_args():
                         type=int, help='Measured temperature in degrees F, for used with calibrate flag')
     parser.add_argument('--actual-gravity', dest='actual_gravity', action='store', default=0,
                         type=float, help='Measured gravity, for used with calibrate flag')
-
+    parser.add_argument('--auto-stop', type=int, dest='auto_stop', action='store', default=0,
+                        help='Number of minute to wait before stopping Pitch if no beacons were received')
     return parser.parse_args()
 
 
@@ -27,10 +28,14 @@ if __name__ == '__main__':
         pitch_main(providers=[calibrator],
                    timeout_seconds=5,
                    simulate_beacons=args.simulate_beacons,
+                   auto_stop_minutes=args.auto_stop,
                    console_log=False)
         print("Finished")
     else:
         # Run with default providers, forever, possibly simulating beacons
-        pitch_main(providers=None, timeout_seconds=0, simulate_beacons=args.simulate_beacons)
+        pitch_main(providers=None,
+                   timeout_seconds=0,
+                   simulate_beacons=args.simulate_beacons,
+                   auto_stop_minutes=args.auto_stop)
 
 
