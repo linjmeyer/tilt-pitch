@@ -3,6 +3,11 @@ log.json
 pitch_log.json
 pitch.json
 .idea/
+.vscode/
+.DS_Store
+
+# Keep pitch.json files in example dir
+!examples/**/pitch.json
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/pycharm,python
