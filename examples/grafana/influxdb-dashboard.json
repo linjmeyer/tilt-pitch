@@ -35,7 +35,7 @@
       "type": "row"
     },
     {
-      "datasource": "InfluxDB-Pitch",
+      "datasource": "default",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -116,7 +116,7 @@
       "type": "stat"
     },
     {
-      "datasource": "InfluxDB-Pitch",
+      "datasource": "default",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -195,7 +195,7 @@
       "type": "stat"
     },
     {
-      "datasource": "InfluxDB-Pitch",
+      "datasource": "default",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -274,7 +274,7 @@
       "type": "stat"
     },
     {
-      "datasource": "InfluxDB-Pitch",
+      "datasource": "default",
       "fieldConfig": {
         "defaults": {
           "custom": {},
@@ -359,7 +359,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "InfluxDB-Pitch",
+      "datasource": "default",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -492,7 +492,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "InfluxDB-Pitch",
+      "datasource": "default",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -625,7 +625,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "InfluxDB-Pitch",
+      "datasource": "default",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -758,7 +758,7 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "InfluxDB-Pitch",
+      "datasource": "default",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -900,7 +900,7 @@
             "Pumpkin Ale"
           ]
         },
-        "datasource": "InfluxDB-Pitch",
+        "datasource": "default",
         "definition": "SHOW TAG VALUES ON \"pitch\" WITH KEY = \"name\"",
         "hide": 0,
         "includeAll": true,
