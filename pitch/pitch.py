@@ -1,8 +1,10 @@
 import argparse
+import signal
 import threading
 import time
 import random
 import queue
+import logging
 from pyfiglet import Figlet
 from beacontools import BeaconScanner, IBeaconAdvertisement
 from .models import TiltStatus
@@ -20,8 +22,9 @@ uuid_to_colors = {
         "a495bb10-c5b1-4b44-b512-1370f02d74de": "red",
         "a495bb60-c5b1-4b44-b512-1370f02d74de": "blue",
         "a495bb50-c5b1-4b44-b512-1370f02d74de": "orange",
-        "a495bb70-c5b1-4b44-b512-1370f02d74de": "pink",
+        "a495bb70-c5b1-4b44-b512-1370f02d74de": "yellow",
         "a495bb40-c5b1-4b44-b512-1370f02d74de": "purple",
+        "a495bb80-c5b1-4b44-b512-1370f02d74de": "pink",
         "a495bb40-c5b1-4b44-b512-1370f02d74df": "simulated"  # reserved for fake beacons during simulation mode
     }
 
@@ -34,8 +37,11 @@ normal_providers = [
         PrometheusCloudProvider(config),
         FileCloudProvider(config),
         InfluxDbCloudProvider(config),
+        InfluxDb2CloudProvider(config),
         BrewfatherCustomStreamCloudProvider(config),
-        BrewersFriendCustomStreamCloudProvider(config)
+        BrewersFriendCustomStreamCloudProvider(config),
+        GrainfatherCustomStreamCloudProvider(config),
+        TaplistIOCloudProvider(config)
     ]
 
 # Queue for holding incoming scans
@@ -70,23 +76,35 @@ def pitch_main(providers, timeout_seconds: int, simulate_beacons: bool, console_
 
 def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beacons: bool, console_log: bool):
     if simulate_beacons:
-        threading.Thread(name='background', target=_start_beacon_simulation).start()
+        # Set daemon true so this thread dies when the parent process/thread dies
+        threading.Thread(name='background', target=_start_beacon_simulation, daemon=True).start()
     else:
-        scanner = BeaconScanner(_beacon_callback, packet_filter=IBeaconAdvertisement)
+        scanner = BeaconScanner(_beacon_callback,packet_filter=IBeaconAdvertisement)
         scanner.start()
+        signal.signal(signal.SIGTERM, _trigger_graceful_termination)
         print("...started: Tilt scanner")
+
 
     print("Ready!  Listening for beacons")
     start_time = time.time()
     end_time = start_time + timeout_seconds
-    while True:
-        time.sleep(0.01)
-        _handle_pitch_queue(enabled_providers, console_log)
-        # check timeout
-        if timeout_seconds:
-            current_time = time.time()
-            if current_time > end_time:
-                return  # stop
+    try:
+        while True:
+            time.sleep(0.01)
+            _handle_pitch_queue(enabled_providers, console_log)
+            # check timeout
+            if timeout_seconds:
+                current_time = time.time()
+                if current_time > end_time:
+                    return  # stop
+    except KeyboardInterrupt as e:
+        if not simulate_beacons:
+            scanner.stop()
+        print("...stopped: Tilt Scanner (keyboard interrupt)")
+    except Exception as e:
+        if not simulate_beacons:
+            scanner.stop()
+        print("...stopped: Tilt Scanner ({})".format(e))
 
 
 def _start_beacon_simulation():
@@ -105,18 +123,30 @@ def _start_beacon_simulation():
 
 
 def _beacon_callback(bt_addr, rssi, packet, additional_info):
-    uid =  packet.uuid
-    color = "yellow" # uuid_to_colors.get(uuid)
+    # When queue is full broadcasts should be ignored
+    # this can happen because Tilt broadcasts very frequently, while Pitch must make network calls
+    # to forward Tilt status info on and this can cause Pitch to fall behind
+    if pitch_q.full():
+        return
+
+    uuid = packet.uuid
+    color = uuid_to_colors.get(uuid)
     if color:
         # iBeacon packets have major/minor attributes with data
         # major = degrees in F (int)
         # minor = gravity (int) - needs to be converted to float (e.g. 1035 -> 1.035)
         tilt_status = TiltStatus(color, packet.major, _get_decimal_gravity(packet.minor), config)
-        pitch_q.put(tilt_status)
+        if not tilt_status.temp_valid:
+            print("Ignoring broadcast due to invalid temperature: {}F".format(tilt_status.temp_fahrenheit))
+        elif not tilt_status.gravity_valid:
+            print("Ignoring broadcast due to invalid gravity: " + str(tilt_status.gravity))
+        else:
+            pitch_q.put_nowait(tilt_status)
 
 
 def _handle_pitch_queue(enabled_providers: list, console_log: bool):
-    if pitch_q.empty():
+    if config.queue_empty_sleep_seconds > 0 and pitch_q.empty():
+        time.sleep(config.queue_empty_sleep_seconds)
         return
 
     if pitch_q.full():
@@ -160,3 +190,6 @@ def _get_webhook_providers(config: PitchConfig):
 def _start_message():
     f = Figlet(font='slant')
     print(f.renderText('Pitch'))
+
+def _trigger_graceful_termination(signalNumber, frame):
+    raise Exception("Termination signal received")
