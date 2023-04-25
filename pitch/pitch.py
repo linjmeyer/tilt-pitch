@@ -39,7 +39,8 @@ normal_providers = [
         BrewfatherCustomStreamCloudProvider(config),
         BrewersFriendCustomStreamCloudProvider(config),
         GrainfatherCustomStreamCloudProvider(config),
-        TaplistIOCloudProvider(config)
+        TaplistIOCloudProvider(config),
+        AzureIoTHubCloudProvider(config)
     ]
 
 # Queue for holding incoming scans

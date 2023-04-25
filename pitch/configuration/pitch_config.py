@@ -47,6 +47,10 @@ class PitchConfig:
         # Grainfather
         self.grainfather_custom_stream_urls = None
         self.grainfather_temp_unit = "F"
+        # Azure IoT Hub
+        self.azure_iot_hub_connectionstring = None
+        self.azure_iot_hub_limit_rate = 8000 # free tier 8000msg per day
+        self.azure_iot_hub_limit_period = 86400 # free tier 8000msg per day
         # Load user inputs from config file
         self.update(data)
 

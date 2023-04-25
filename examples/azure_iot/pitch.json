@@ -1,0 +1,5 @@
+{
+    "azure_iot_hub_connectionstring": "HostName=jhpbrewsbeer.azure-devices.net;DeviceId=TiltPi_Black;SharedAccessKey=...",
+    "azure_iot_hub_limit_rate": 8000,
+    "azure_iot_hub_limit_period": 86400
+}

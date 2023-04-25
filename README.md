@@ -69,6 +69,9 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 | `grainfather_temp_unit` (str) | Temperature unit `F` or `C` for Grainfather | `F` |  [Example config](examples/grainfather/pitch.json) |
 | `brewersfriend_api_key` (str) | API Key for Brewer's Friend | None/empty | No example yet (PRs welcome!) |
 | `taplistio_url` (str) | URL of Taplist.io Tilt reporting webhook | None/empty | No example |
+| `azure_iot_hub_connectionstring` (str) | Azure IoT Hub Device Connection String | None/empty | [Example config](examples/azure_iot/readme.md) |
+| `azure_iot_hub_limit_rate` (int) | Rate limit according to selected IoT Hub tier. | 8000 | [Example config](examples/azure_iot/pitch.json) |
+| `azure_iot_hub_limit_period` (int) | Period during which to observe rate limit, defaults to one day. | 86400 | [Example config](examples/azure_iot/pitch.json) |
 | `{color}_name` (str) | Name of your brew, where {color} is the color of the Tilt (purple, red, etc) | Color (e.g. purple, red, etc) | No example yet (PRs welcome!) |
 | `{color}_original_gravity` (float) | Original gravity of the beer, where {color} is the color of the Tilt (purple, red, etc) | None/empty | No example yet (PRs welcome!) |
 | `{color}_temp_offset` (int) | Temperature offset to calibrate Tilt temperatures with a secondary reading [See Calibration](#Calibration) | 0 | No example yet (PRs welcome!) |
@@ -119,6 +122,7 @@ beacon events instead of scanning for Tilt events via Bluetooth.
 * [Brewer's Friend](#BrewersFriend)
 * [Grainfather](#Grainfather)
 * [Taplist.io](#taplistio)
+* [Azure IoT Hub](#Azure-IoT-Hub)
 
 Don't see one you want, send a PR implementing [CloudProviderBase](https://github.com/linjmeyer/tilt-pitch/blob/master/pitch/abstractions/cloud_provider.py)
 
@@ -256,6 +260,14 @@ To setup login into Brewer's Friend > Profile > Integrations > Copy Api Key
 Tilt data can be logged to [Taplist.io](https://taplist.io/) using the Tilt Integration feature.
 
 To setup, log into Taplist.io and visit _Account_ > _Integrations_ > _Tilt Hydrometer_. Copy the _Webhook URL_ value into your Pitch config as `taplistio_url`.
+
+## Azure IoT Hub
+
+Tilt data can be logged as IoT telemetry to Azure IoT hub and processed
+by a variety of services like Event Hubs, Stream Analytics and Power BI.
+
+To set up, follow the instructions at [Microsoft Learn](https://learn.microsoft.com/en-us/azure/iot-hub/iot-hub-create-through-portal)
+to configure the IoT hub and create a new device to receive your Tilt's measurements.
 
 # Examples
 
