@@ -30,6 +30,7 @@ setuptools.setup(
         'python-interface',
         'jsonpickle',
         'beacontools',
-        'pyfiglet'
+        'pyfiglet',
+        'azure-iot-device'
     ],
 )

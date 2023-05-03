@@ -6,3 +6,4 @@ influxdb
 influxdb-client[ciso]
 beacontools[scan]
 pybluez
+azure-iot-device
