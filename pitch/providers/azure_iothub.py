@@ -15,6 +15,7 @@ class AzureIoTHubCloudProvider(implements(CloudProviderBase)):
         self.config = config
         self.str_name = "Azure IoT Hub ({})".format(config.azure_iot_hub_connectionstring)
         self.rate_limiter = DeviceRateLimiter(rate=config.azure_iot_hub_limit_rate, period=config.azure_iot_hub_limit_period)
+
     def __str__(self):
         return self.str_name
 
@@ -35,4 +36,5 @@ class AzureIoTHubCloudProvider(implements(CloudProviderBase)):
         asyncio.run(self.send(tilt_status))
 
     def enabled(self):
-        return True
+        enabled = True if self.config.azure_iot_hub_connectionstring else False
+        return enabled
