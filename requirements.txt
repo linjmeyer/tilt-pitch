@@ -5,5 +5,5 @@ pyfiglet
 influxdb
 influxdb-client[ciso]
 beacontools[scan]
+azure-iot-device==3.0.0b2
 pybluez
-azure-iot-device

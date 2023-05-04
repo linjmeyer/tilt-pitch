@@ -23,14 +23,5 @@ setuptools.setup(
         "Operating System :: POSIX :: Linux",
     ],
     python_requires='>=3.7',
-    install_requires=[
-        'pybluez',
-        'influxdb',
-        'prometheus_client',
-        'python-interface',
-        'jsonpickle',
-        'beacontools',
-        'pyfiglet',
-        'azure-iot-device'
-    ],
+    install_requires=REQUIREMENTS,
 )
