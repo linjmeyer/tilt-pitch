@@ -1,9 +1,9 @@
-import argparse
-import random
+import asyncio
 import signal
-import threading
+from construct import Array, Byte, Const, Int8sl, Int16ub, Struct
 import time
 from queue import Queue
+from uuid import UUID
 
 from bleak import BleakScanner
 from bleak.backends.device import BLEDevice
@@ -34,12 +34,20 @@ normal_providers = [
 
 # Queue for holding incoming scans
 pitch_q: Queue = Queue(maxsize=config.queue_size)
+ibeacon_format = Struct(
+    "type_length" / Const(b"\x02\x15"),
+    "uuid" / Array(16, Byte),
+    "temperature" / Int16ub,
+    "gravity" / Int16ub,
+    "power" / Int8sl,
+)
+
 
 #############################################
 #############################################
 
 
-def pitch_main(providers, timeout_seconds: int, simulate_beacons: bool, console_log: bool = True):
+def pitch_main(providers, timeout_seconds: int, console_log: bool = True):
     if providers is None:
         providers = normal_providers
 
@@ -58,27 +66,25 @@ def pitch_main(providers, timeout_seconds: int, simulate_beacons: bool, console_
                 provider__start_message = ''
             print(f"...started: {provider} {provider__start_message}")
     # Start
-    _start_scanner(enabled_providers, timeout_seconds,
-                   simulate_beacons, console_log)
+    asyncio.run(_start_scanner(enabled_providers, timeout_seconds, console_log))
 
 
-def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beacons: bool, console_log: bool):
-    if simulate_beacons:
-        # Set daemon true so this thread dies when the parent process/thread dies
-        threading.Thread(name='background',
-                         target=_start_beacon_simulation, daemon=True).start()
-    else:
-        scanner = Beacon(_beacon_callback, packet_filter=IBeaconAdvertisement)
-        scanner.start()
-        signal.signal(signal.SIGTERM, _trigger_graceful_termination)
-        print("...started: Tilt scanner")
+async def _start_scanner(enabled_providers: list, timeout_seconds: int, console_log: bool):
+    scanner = BleakScanner()
+    scanner.register_detection_callback(_beacon_callback)
+
+    signal.signal(signal.SIGTERM, _trigger_graceful_termination)
+    print("...started: Tilt scanner")
 
     print("Ready!  Listening for beacons")
     start_time = time.time()
     end_time = start_time + timeout_seconds
     try:
         while True:
-            time.sleep(0.01)
+            await scanner.start()
+            await asyncio.sleep(1.0)
+            await scanner.stop()
+
             _handle_pitch_queue(enabled_providers, console_log)
             # check timeout
             if timeout_seconds:
@@ -86,51 +92,36 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
                 if current_time > end_time:
                     return  # stop
     except KeyboardInterrupt:
-        if not simulate_beacons:
-            scanner.stop()
+        scanner.stop()
         print("...stopped: Tilt Scanner (keyboard interrupt)")
     except Exception as ex:
-        if not simulate_beacons:
-            scanner.stop()
+        scanner.stop()
         print(f"...stopped: Tilt Scanner ({ex})")
 
 
-def _start_beacon_simulation():
-    """Simulates Beacon scanning with fake events. Useful when testing or developing
-    without a beacon, or on a platform with no Bluetooth support"""
-    print("...started: Tilt Beacon Simulator")
-    # Using Namespace to trick a dict into a 'class'
-    while True:
-        fake_packet = argparse.Namespace(**{
-            'uuid': colors_to_uuid['simulated'],
-            'major': random.randrange(65, 75),  # nosec: B311
-            'minor': random.randrange(1035, 1040)  # nosec: B311
-        })
-        _beacon_callback(None, None, fake_packet, dict())
-        time.sleep(0.25)
-
-
-def _beacon_callback(bt_addr, rssi, packet, additional_info):
+def _beacon_callback(_, advertisement_data: AdvertisementData):
     # When queue is full broadcasts should be ignored
     # this can happen because Tilt broadcasts very frequently, while Pitch must make network calls
     # to forward Tilt status info on and this can cause Pitch to fall behind
-    if pitch_q.full():
-        return
+    try:
+        manufacturer_data = advertisement_data.manufacturer_data[0x004C]
+        ibeacon = ibeacon_format.parse(manufacturer_data)
+        uuid: UUID = UUID(bytes=bytes(ibeacon.uuid))
+        if uuid == UUID("a495bb70-c5b1-4b44-b512-1370f02d74de"):
+            if pitch_q.full():
+                return
 
-    uuid = packet.uuid
-    color = uuid_to_colors.get(uuid)
-    if color:
-        # iBeacon packets have major/minor attributes with data
-        # major = degrees in F (int)
-        # minor = gravity (int) - needs to be converted to float (e.g. 1035 -> 1.035)
-        tilt_status = TiltStatus(
-            color, packet.major, _get_decimal_gravity(packet.minor), config)
-        if not tilt_status.temp_valid:
-            print(f"Ignoring broadcast due to invalid temperature: {tilt_status.temp_fahrenheit}F")
-        elif not tilt_status.gravity_valid:
-            print(f"Ignoring broadcast due to invalid gravity: {str(tilt_status.gravity)}")
-        else:
-            pitch_q.put_nowait(tilt_status)
+            color = "yellow"
+            if color:
+                tilt_status = TiltStatus(color, ibeacon.temperature, _get_decimal_gravity(ibeacon.gravity), config)
+                if not tilt_status.temp_valid:
+                    print(f"Ignoring broadcast due to invalid temperature: {tilt_status.temp_fahrenheit}F")
+                elif not tilt_status.gravity_valid:
+                    print(f"Ignoring broadcast due to invalid gravity: {str(tilt_status.gravity)}")
+                else:
+                    pitch_q.put_nowait(tilt_status)
+    except KeyError:
+        pass
 
 
 def _handle_pitch_queue(enabled_providers: list, console_log: bool):
@@ -177,4 +168,4 @@ def _get_webhook_providers(pitch_config: PitchConfig):
 
 
 def _trigger_graceful_termination(signal_number, frame):
-    raise Exception("Termination signal received")
+    raise KeyboardInterrupt("Termination signal received")

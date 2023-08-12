@@ -27,11 +27,8 @@ if __name__ == '__main__':
         calibrator = CalibrationCloudProvider(args.calibrate, args.actual_temp, args.actual_gravity)
         pitch_main(providers=[calibrator],
                    timeout_seconds=5,
-                   simulate_beacons=args.simulate_beacons,
                    console_log=False)
         print("Finished")
     else:
         # Run with default providers, forever, possibly simulating beacons
-        pitch_main(providers=None, timeout_seconds=0, simulate_beacons=args.simulate_beacons)
-
-
+        pitch_main(providers=None, timeout_seconds=0)

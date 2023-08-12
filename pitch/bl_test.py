@@ -10,8 +10,8 @@ from construct.core import ConstError
 ibeacon_format = Struct(
     "type_length" / Const(b"\x02\x15"),
     "uuid" / Array(16, Byte),
-    "major" / Int16ub,
-    "minor" / Int16ub,
+    "temperature" / Int16ub,
+    "gravity" / Int16ub,
     "power" / Int8sl,
 )
 
@@ -25,11 +25,11 @@ def device_found(
         ibeacon = ibeacon_format.parse(apple_data)
         uuid = UUID(bytes=bytes(ibeacon.uuid))
         if uuid == UUID("a495bb70-c5b1-4b44-b512-1370f02d74de"):
-            print(f"UUID     : {uuid}")
-            print(f"Major    : {ibeacon.major}")
-            print(f"Minor    : {ibeacon.minor}")
-            print(f"TX power : {ibeacon.power} dBm")
-            print(f"RSSI     : {device.rssi} dBm")
+            print(f"UUID       : {uuid}")
+            print(f"temperature: {ibeacon.temperature}")
+            print(f"gravity    : {ibeacon.gravity}")
+            print(f"TX power   : {ibeacon.power} dBm")
+            print(f"RSSI       : {device.rssi} dBm")
             print(47 * "-")
     except KeyError:
         # Apple company ID (0x004c) not found
