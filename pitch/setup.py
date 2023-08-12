@@ -1,10 +1,11 @@
-import setuptools
 import os
 
-with open("README.md", "r") as fh:
+import setuptools
+
+with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-with open('requirements.txt', 'rt') as reqs_file:
+with open('requirements.txt', 'rt', encoding="utf-8") as reqs_file:
     REQUIREMENTS = reqs_file.readlines()
 
 setuptools.setup(
@@ -24,7 +25,6 @@ setuptools.setup(
     ],
     python_requires='>=3.7',
     install_requires=[
-        'pybluez',
         'influxdb',
         'prometheus_client',
         'python-interface',

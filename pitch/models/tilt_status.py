@@ -1,6 +1,7 @@
+import datetime
+
 from ..configuration import PitchConfig
 from .json_serialize import JsonSerialize
-import datetime
 
 
 class TiltStatus(JsonSerialize):

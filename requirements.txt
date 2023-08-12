@@ -5,5 +5,4 @@ pyfiglet
 influxdb
 requests
 influxdb-client[ciso]
-beacontools[scan]
-pybluez
+bleak

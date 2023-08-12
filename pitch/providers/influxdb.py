@@ -1,8 +1,9 @@
-from ..models import TiltStatus
+from influxdb import InfluxDBClient
+from interface import implements
+
 from ..abstractions import CloudProviderBase
 from ..configuration import PitchConfig
-from interface import implements
-from influxdb import InfluxDBClient
+from ..models import TiltStatus
 
 
 class InfluxDbCloudProvider(implements(CloudProviderBase)):

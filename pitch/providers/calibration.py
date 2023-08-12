@@ -1,6 +1,7 @@
-from ..models import TiltStatus
-from ..abstractions import CloudProviderBase
 from interface import implements
+
+from ..abstractions import CloudProviderBase
+from ..models import TiltStatus
 
 
 class CalibrationCloudProvider(implements(CloudProviderBase)):

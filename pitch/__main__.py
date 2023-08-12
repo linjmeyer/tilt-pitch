@@ -1,6 +1,7 @@
+import argparse
+
 from . import pitch_main
 from .providers import CalibrationCloudProvider
-import argparse
 
 
 def _get_args():

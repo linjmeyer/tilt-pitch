@@ -1,8 +1,9 @@
-from ..models import TiltStatus
-from ..abstractions import CloudProviderBase
-from ..configuration import PitchConfig
 from interface import implements
 from prometheus_client import Counter, Gauge, start_http_server
+
+from ..abstractions import CloudProviderBase
+from ..configuration import PitchConfig
+from ..models import TiltStatus
 
 counter_beacons_received = Counter('pitch_beacons_received', 'Number of beacons received', ['color', 'name'])
 gauge_temperature_fahrenheit = Gauge('pitch_temperature_fahrenheit', 'Temperature in fahrenheit', ['color', 'name'])

@@ -1,10 +1,12 @@
-from ..models import TiltStatus
+import json
+
+import requests
+from interface import implements
+
 from ..abstractions import CloudProviderBase
 from ..configuration import PitchConfig
+from ..models import TiltStatus
 from ..rate_limiter import DeviceRateLimiter
-from interface import implements
-import requests
-import json
 
 
 class TaplistIOCloudProvider(implements(CloudProviderBase)):
