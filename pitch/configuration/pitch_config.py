@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Optional
 
 
 class PitchConfig:
@@ -14,7 +15,7 @@ class PitchConfig:
         self.gravity_range_min = 0.7
         self.gravity_range_max = 1.4
         # Webhook
-        self.webhook_urls = list()
+        self.webhook_urls = []
         self.webhook_limit_rate = 1
         self.webhook_limit_period = 1
         # File Path
@@ -32,10 +33,10 @@ class PitchConfig:
         self.influxdb_batch_size = 10
         self.influxdb_timeout_seconds = 5
         # InfluxDB2
-        self.influxdb2_url = None
-        self.influxdb2_org = None
-        self.influxdb2_token = None
-        self.influxdb2_bucket = None
+        self.influxdb2_url: Optional[str] = None
+        self.influxdb2_org: Optional[str] = None
+        self.influxdb2_token: Optional[str] = None
+        self.influxdb2_bucket: Optional[str] = None
         # Brewfather
         self.brewfather_custom_stream_url = None
         self.brewfather_custom_stream_temp_unit = "F"
@@ -65,14 +66,13 @@ class PitchConfig:
     def get_brew_name(self, color: str):
         return self.__dict__.get(color + '_name', color)
 
-
     @staticmethod
-    def load(additional_config: dict = None):
+    def load(additional_config: Optional[dict] = None):
         file_path = "pitch.json"
         config_raw = dict()
 
         if os.path.isfile(file_path):
-            file_open = open(file_path, "r").read()
+            file_open = open(file_path, "r", encoding="utf-8").read()
             config_raw = json.loads(file_open)
 
         config = PitchConfig(config_raw)
@@ -80,4 +80,3 @@ class PitchConfig:
             config.update(additional_config)
 
         return config
-

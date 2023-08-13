@@ -6,3 +6,4 @@ influxdb
 requests
 influxdb-client[ciso]
 bleak
+construct

@@ -145,7 +145,7 @@ def _handle_pitch_queue(enabled_providers: list, console_log: bool):
             # nothing to worry about, just called this too many times (locally)
             print(f"Skipping update due to rate limiting for provider {provider} for color {tilt_status.color}")
         except Exception as ex:
-            # todo: better logging of errors
+            # TODO: better logging of errors
             print(ex)
     # Log it to console/stdout
     if console_log:
