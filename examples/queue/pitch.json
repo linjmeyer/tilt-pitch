@@ -1,0 +1,4 @@
+{
+  "queue_size": 2,
+  "queue_empty_sleep_seconds": 2
+}
