@@ -18,7 +18,7 @@ The following features are implemented, planned, or will be investigated in the 
 * [x] Calibrate Tilt readings with known good values
 * [x] Prometheus Metrics
 * [x] Tilt status log file (JSON)
-* [X] InfluxDB 1.0 and 2.0 Metrics 
+* [X] InfluxDB 1.0 and 2.0 Metrics
 * [X] Multiple logging and metric sources simultaneously
 * [X] Webhooks for supporting generic integrations (similar to Tilt's Cloud Logging feature)
 * [X] Gravity, original gravity, ABV, temperature and apparent attenuation
@@ -28,7 +28,7 @@ The following features are implemented, planned, or will be investigated in the 
 
 # Installation
 
-Pitch will only work on Linux, with libbluetooth-dev installed.  [See examples/install/prereq.sh](https://github.com/linjmeyer/tilt-pitch/blob/master/examples/install/prereqs.sh) for 
+Pitch will only work on Linux, with libbluetooth-dev installed.  [See examples/install/prereq.sh](https://github.com/linjmeyer/tilt-pitch/blob/master/examples/install/prereqs.sh) for
 an example of how to do this using apt-get (Ubuntu, Raspberry Pi, etc).  
 
 After setting up prereqs install using: `pip3 install tilt-pitch`
@@ -40,15 +40,15 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 
 | Option                       | Purpose                      | Default               | Example               |
 | ---------------------------- | ---------------------------- | --------------------- | --------------------- |
-| `queue_size` (int) | Max queue size for all Tilt event broadcasts.  Events are removed from the queue once all enabled providers have handled the event.  New events are dropped when the queue is maxed.  | `3` | No example yet (PRs welcome!) |
-| `queue_empty_sleep_seconds` (int) | Time in seconds Pitch will sleep when the queue reaches 0. The higher the value the less CPU time Pitch uses.  Can be 0 or negative (this disables sleep and Pitch will always run). | `1` | No example yet (PRs welcome!) |
+| `queue_size` (int) | Max queue size for all Tilt event broadcasts.  Events are removed from the queue once all enabled providers have handled the event.  New events are dropped when the queue is maxed.  | `3` | [Example config](examples/queue/pitch.json) |
+| `queue_empty_sleep_seconds` (int) | Time in seconds Pitch will sleep when the queue reaches 0. The higher the value the less CPU time Pitch uses.  Can be 0 or negative (this disables sleep and Pitch will always run). | `1` | [Example config](examples/queue/pitch.json) |
 | `temp_range_min` (int) | Minimum temperature (Fahrenheit) for Pitch to consider a Tilt broadcast to be valid. | `32` | No example yet (PRs welcome!) |
 | `temp_range_max` (int) | Maximum temperature (Fahrenheit) for Pitch to consider a Tilt broadcast to be valid. | `212` | No example yet (PRs welcome!) |
 | `gravity_range_min` (int) | Minimum gravity for Pitch to consider a Tilt broadcast to be valid. | `0.7` | No example yet (PRs welcome!) |
 | `gravity_range_max` (int) | Maximum gravity for Pitch to consider a Tilt broadcast to be valid. | `1.4` | No example yet (PRs welcome!) |
-| `webhook_urls` (array) | Adds webhook URLs for Tilt status updates | None/empty | No example yet (PRs welcome!) |
-| `webhook_limit_rate` (int) | Number of webhooks to fire for the limit period (per URL) | 1 | No example yet (PRs welcome!) |
-| `webhook_limit_period` (int) | Period for rate limiting (in seconds) | 1 | No example yet (PRs welcome!) |
+| `webhook_urls` (array) | Adds webhook URLs for Tilt status updates | None/empty | [Example config](examples/webhook/pitch.json) |
+| `webhook_limit_rate` (int) | Number of webhooks to fire for the limit period (per URL) | 1 | [Example config](examples/webhook/pitch.json) |
+| `webhook_limit_period` (int) | Period for rate limiting (in seconds) | 1 | [Example config](examples/webhook/pitch.json) |
 | `log_file_path` (str) | Path to file for JSON event logging | `pitch_log.json` | No example yet (PRs welcome!) |
 | `log_file_max_mb` (int) | Max JSON log file size in megabytes | `10` | No example yet (PRs welcome!) |
 | `prometheus_enabled` (bool) | Enable/Disable Prometheus metrics | `true` | No example yet (PRs welcome!) |
@@ -81,7 +81,7 @@ Custom configurations can be used by creating a file `pitch.json` in the working
 
 A single Tilt can emit several events per second.  To avoid overloading integrations with data events are queued with a max queue size set via the `queue_size`
 configuration parameter.  If new events are broadcast from a Tilt and the queue is full, they are ignored.  Events are removed from the queue once all enabled
-providers have handled the event.  Additionally some providers may implement their own queueing or rate limiting.  InfluxDB for example waits until a certain 
+providers have handled the event.  Additionally some providers may implement their own queueing or rate limiting.  InfluxDB for example waits until a certain
 queue size is met before sending a batch of events, and the Brewfather and Grainfather integrations will only send updates every fifteen minutes.
 
 Refer to the above configuration and the integration list below for details on how this works for different integrations.
@@ -201,7 +201,7 @@ Each beacon event from a Tilt will create a measurement like this:
 {
     "measurement": "tilt",
     "tags": {
-        "name": "Pumpkin Ale", 
+        "name": "Pumpkin Ale",
         "color": "purple"
     },
     "fields": {

@@ -1,0 +1,8 @@
+{
+  "webhook_limit_period": 30,
+  "webhook_limit_rate": 2,
+  "webhook_urls": [
+    "https://webaddress/webhook1",
+    "https://webaddress/webhook2"
+  ]
+}

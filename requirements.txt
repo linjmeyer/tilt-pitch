@@ -1,7 +1,7 @@
 prometheus_client
 jsonpickle
 python-interface
-pyfiglet
+pyfiglet<1
 influxdb
 influxdb-client[ciso]
 beacontools[scan]
