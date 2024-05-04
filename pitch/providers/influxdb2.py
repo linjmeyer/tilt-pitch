@@ -21,7 +21,7 @@ class InfluxDb2CloudProvider(implements(CloudProviderBase)):
             url=self.config.influxdb2_url,
             token=self.config.influxdb2_token,
             org=self.config.influxdb2_org,
-            timeout=self.config.influxdb_timeout_seconds)
+            timeout=self.config.influxdb_timeout_seconds*1000)
         self.write_api = self.client.write_api(write_options=SYNCHRONOUS)
 
     def update(self, tilt_status: TiltStatus):
