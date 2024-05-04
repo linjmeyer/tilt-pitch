@@ -17,7 +17,7 @@ class TiltStatus(JsonSerialize):
             temp_fahrenheit /= 10
 
         self.temp_fahrenheit = temp_fahrenheit + config.get_temp_offset(color)
-        self.temp_celsius = TiltStatus.get_celsius(temp_fahrenheit)
+        self.temp_celsius = TiltStatus.get_celsius(self.temp_fahrenheit)
         self.original_gravity = config.get_original_gravity(color)
         self.gravity = current_gravity + config.get_gravity_offset(color)
         self.alcohol_by_volume = TiltStatus.get_alcohol_by_volume(self.original_gravity, self.gravity)
