@@ -21,7 +21,7 @@ class InfluxDb2CloudProvider(implements(CloudProviderBase)):
             url=self.config.influxdb2_url,
             token=self.config.influxdb2_token,
             org=self.config.influxdb2_org,
-            timeout=self.config.influxdb_timeout_seconds)
+            timeout=self.config.influxdb_timeout_seconds*1000)
         self.write_api = self.client.write_api(write_options=SYNCHRONOUS)
 
     def update(self, tilt_status: TiltStatus):
@@ -49,6 +49,7 @@ class InfluxDb2CloudProvider(implements(CloudProviderBase)):
                 "temp_fahrenheit": tilt_status.temp_fahrenheit,
                 "temp_celsius": tilt_status.temp_celsius,
                 "gravity": tilt_status.gravity,
+                "degrees_plato": tilt_status.degrees_plato,
                 "alcohol_by_volume": tilt_status.alcohol_by_volume,
                 "apparent_attenuation": tilt_status.apparent_attenuation
             }
