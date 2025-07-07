@@ -4,42 +4,61 @@ on: [push, pull_request]
 
 jobs:
   build:
-
+    # stick with the latest Ubuntu runner
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        # Use the latest LTS Python version for builds
-        python-version: ['3.10']
+        python-version: ['3.10']   # keep this quoted!
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+    # 1. checkout
+    - uses: actions/checkout@v3           # newer action
+
+    # 2. Python
+    - name: Set up Python
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+        cache: 'pip'
+
+    # 3. OS-level deps (for bluez headers)
+    - name: Install system packages
       run: |
         sudo apt-get update
-        sudo apt-get install -y libbluetooth-dev
-        python -m pip install --upgrade pip setuptools==57 wheel twine
-        pip install -r requirements.txt
-    - name: Run Tests
+        sudo apt-get install -y --no-install-recommends libbluetooth-dev
+
+    # 4. Project & test dependencies
+    - name: Install Python dependencies
       run: |
-        python -m unittest discover test 
-    - name: Build and publish
-      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        python -m pip install --upgrade pip
+        # build & publish tools
+        pip install build twine
+        # project + test deps (adjust if you have extras)
+        pip install -e .[test]  || pip install -r requirements.txt
+
+    # 5. Run tests
+    - name: Run test suite
+      run: |
+        python -m unittest discover test
+
+    # 6. Build & publish on a version tag (vX.Y.Z)
+    - name: Build & publish to PyPI
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
       env:
         TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.TWINE_TOKEN }}
-      # On tag, get tag version without v (e.g. v1.0.0 -> 1.0.0, v1.1.1-beta -> 1.1.1-beta)
       run: |
-        if [[ $GITHUB_REF == "refs/tags/v"* ]]; then
-          echo "Found release tag"
-          PITCH_VERSION=${GITHUB_REF/refs\/tags\/v}
-        else
-          echo "No release tag found"
-          exit 1
-        fi
-        echo "Using version: $PITCH_VERSION"
-        PITCH_VERSION="$PITCH_VERSION" python pitch/setup.py sdist bdist_wheel
+        # Extract tag name, strip the leading "v"
+        RELEASE_VERSION=${GITHUB_REF#refs/tags/v}
+        echo "Packaging release $RELEASE_VERSION"
+
+        # If you rely on setuptools-scm or hatchling’s dynamic version,
+        # feed the tag through the appropriate env var, e.g.:
+        export SETUPTOOLS_SCM_PRETEND_VERSION=$RELEASE_VERSION
+
+        # Build PEP 517 sdist + wheel
+        python -m build --sdist --wheel
+
+        # Upload
         twine upload dist/*
