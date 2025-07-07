@@ -10,6 +10,7 @@ from .abstractions.beacon_packet import BeaconPacket
 from .models import TiltStatus
 from .providers import *
 from .configuration import PitchConfig
+from .providers.TuiProvider import TuiProvider
 from .rate_limiter import RateLimitedException
 from pyfiglet import Figlet
 from bleak import BleakScanner
@@ -52,9 +53,11 @@ pitch_q = queue.Queue(maxsize=config.queue_size)
 #############################################
 
 
-def pitch_main(providers, timeout_seconds: int, simulate_beacons: bool, console_log: bool = True):
+def pitch_main(providers, timeout_seconds: int, simulate_beacons: bool, tui_enabled: bool = False, console_log: bool = True):
     if providers is None:
         providers = normal_providers
+    if tui_enabled:
+        providers.append(TuiProvider(config))
 
     _start_message()
     # add any webhooks defined in config

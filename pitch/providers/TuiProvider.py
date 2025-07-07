@@ -1,0 +1,103 @@
+﻿import dataclasses
+import time
+import plotext as plt
+import random
+from interface import implements
+from typing import Dict
+from pitch.abstractions import CloudProviderBase
+from pitch.configuration import PitchConfig
+from pitch.models import TiltStatus
+
+class TuiColorState:
+    def __init__(self, color):
+        self.color = color
+        self.times = []
+        self.gravity = []
+        self.temperature = []
+
+    def append(self, tilt_status: TiltStatus):
+        self.times.append(time.time())
+        self.gravity.append(tilt_status.gravity)
+        self.temperature.append(tilt_status.temp_fahrenheit)
+
+class TuiProvider(implements(CloudProviderBase)):
+
+    def __init__(self, config: PitchConfig):
+        self.str_name = "TUI"
+        self.data: Dict[str, TuiColorState] = {}
+        self._last_plot_time = time.time()
+
+    def __str__(self):
+        return self.str_name
+
+    def start(self):
+        pass
+
+    def _set_state(self, tilt_status: TiltStatus):
+        # first time seeing this color, add it to state
+        if tilt_status.color not in self.data.keys():
+            self.data[tilt_status.color] = TuiColorState(tilt_status.color)
+        # Update state
+        self.data[tilt_status.color].append(tilt_status)
+
+    def update(self, tilt_status: TiltStatus):
+        self._set_state(tilt_status)
+        now = time.time()
+        if now - self._last_plot_time < 5:  # redraw every 5 seconds max
+            return
+        self._last_plot_time = now
+
+        plt.clf()
+        plt.theme('clear')
+        plt.subplots(2, 1)
+        # SG Chart
+        plt.subplot(1)
+        plt.title("Specific Gravity by Tilt Color")
+        plt.ylim(0.990, 1.120)
+
+        for color, cstate in self.data.items():
+            if len(cstate.times) < 2:
+                continue
+            gravity_color, _ = TuiProvider.get_colors_for(color)
+            x_vals = [t - cstate.times[0] for t in cstate.times]
+            plt.plot(x_vals, cstate.gravity, label=f"{color}", color=gravity_color)
+
+        plt.show()
+
+        # Temp Chart
+        plt.subplot(2)
+        plt.title("Temperature by Tilt Color")
+        plt.ylim(40, 100)
+
+        for color, cstate in self.data.items():
+            if len(cstate.times) < 2:
+                continue
+            x_vals = [t - cstate.times[0] for t in cstate.times]
+            _, temp_color = TuiProvider.get_colors_for(color)
+            plt.plot(x_vals, cstate.temperature, label=f"{color}", color=temp_color)
+
+        plt.show()
+
+    # noinspection PyMethodMayBeStatic
+    def enabled(self):
+        return True
+
+    @staticmethod
+    def get_colors_for(color: str):
+        """Return (gravity_color_hex, temp_color_hex) for a given Tilt color."""
+        color = color.lower()
+
+        color_map = {
+            "red": ("red", "red+"),
+            "green": ("green", "green+"),
+            "orange": ("orange", "orange+"),  # closest match
+            "blue": ("blue", "blue+"),
+            "black": ("gray", "gray+"),
+            "pink": ("magenta", "magenta+"),
+            # https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors
+            "purple": (91, 93),
+            "yellow": (220, 226),
+            "simulated": ("green", "green+"),
+        }
+
+        return color_map.get(color, ("#444444", "#AAAAAA"))  # fallback: gray
