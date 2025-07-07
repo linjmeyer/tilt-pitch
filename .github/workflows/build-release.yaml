@@ -19,7 +19,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        sudo apt-get install libbluetooth-dev -y
+        sudo apt-get update
+        sudo apt-get install -y libbluetooth-dev
         python -m pip install --upgrade pip setuptools==57 wheel twine
         pip install -r requirements.txt
     - name: Run Tests
