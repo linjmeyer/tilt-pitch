@@ -5,7 +5,7 @@ import time
 import queue
 import logging
 from pyfiglet import Figlet
-from beacontools import BeaconScanner, IBeaconAdvertisement
+import asyncio
 from .models import TiltStatus
 from .providers import *
 from .configuration import PitchConfig
@@ -78,10 +78,11 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
         # Set daemon true so this thread dies when the parent process/thread dies
         threading.Thread(name='background', target=_start_beacon_simulation, daemon=True).start()
     else:
-        scanner = BeaconScanner(_beacon_callback,packet_filter=IBeaconAdvertisement)
-        scanner.start()    
-        signal.signal(signal.SIGTERM, _trigger_graceful_termination)
-        print("...started: Tilt scanner")
+        # Start BLE scanning thread using Bleak
+        stop_event = threading.Event()
+        # Trigger stop_event on termination signal
+        signal.signal(signal.SIGTERM, lambda signalNumber, frame: stop_event.set())
+        threading.Thread(target=_bleak_scanner_thread, args=(stop_event,), daemon=True).start()
         
 
     print("Ready!  Listening for beacons")
@@ -96,12 +97,10 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
                 if current_time > end_time:
                     return  # stop
     except KeyboardInterrupt as e:
-        if not simulate_beacons:
-            scanner.stop()
+        # BLE scanning thread will be terminated when program exits
         print("...stopped: Tilt Scanner (keyboard interrupt)")
     except Exception as e:
-        if not simulate_beacons:
-            scanner.stop()
+        # BLE scanning thread will be terminated when program exits
         print("...stopped: Tilt Scanner ({})".format(e))
 
 def _start_beacon_simulation():
@@ -190,3 +189,50 @@ def _start_message():
 
 def _trigger_graceful_termination(signalNumber, frame):
     raise Exception("Termination signal received")
+    
+def _bleak_scanner_thread(stop_event):
+    """
+    Thread target to run BleakScanner event loop for BLE scanning.
+    """
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(_bleak_scanner_loop(stop_event))
+
+async def _bleak_scanner_loop(stop_event):
+    """
+    Asynchronous scanning loop running BleakScanner.
+    """
+    from bleak import BleakScanner
+    scanner = BleakScanner()
+    scanner.register_detection_callback(_bleak_detection_callback)
+    await scanner.start()
+    print("...started: Tilt scanner")
+    try:
+        while not stop_event.is_set():
+            await asyncio.sleep(1.0)
+    finally:
+        await scanner.stop()
+
+def _bleak_detection_callback(device, advertisement_data):
+    """
+    Detection callback for BleakScanner.
+    Parses iBeacon manufacturer data and forwards to _beacon_callback.
+    """
+    md = advertisement_data.manufacturer_data
+    if not md:
+        return
+    # Apple Company ID for iBeacon is 0x004C
+    ib = md.get(76)
+    if not ib or len(ib) < 23:
+        return
+    # Confirm iBeacon prefix: 0x02, 0x15
+    if ib[0] != 0x02 or ib[1] != 0x15:
+        return
+    # Extract UUID from bytes 2-17
+    import uuid as _uuid
+    uuid_str = str(_uuid.UUID(bytes=bytes(ib[2:18])))
+    # Extract major (bytes 18-19) and minor (bytes 20-21)
+    major = int.from_bytes(ib[18:20], byteorder='big')
+    minor = int.from_bytes(ib[20:22], byteorder='big')
+    packet = argparse.Namespace(uuid=uuid_str, major=major, minor=minor)
+    _beacon_callback(device.address, device.rssi, packet, {})
