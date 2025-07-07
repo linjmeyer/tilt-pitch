@@ -5,6 +5,8 @@ import time
 import queue
 import logging
 import asyncio
+
+from .abstractions.beacon_packet import BeaconPacket
 from .models import TiltStatus
 from .providers import *
 from .configuration import PitchConfig
@@ -107,37 +109,29 @@ def _start_beacon_simulation():
     """Simulates Beacon scanning with fake events. Useful when testing or developing
     without a beacon, or on a platform with no Bluetooth support"""
     print("...started: Tilt Beacon Simulator")
-    # Using Namespace to trick a dict into a 'class'
-    fake_packet = argparse.Namespace(**{
-        'uuid': colors_to_uuid['simulated'],
-        'major': 70,
-        'minor': 1035
-    })
+    fake_packet = BeaconPacket(uuid= colors_to_uuid['simulated'], major=70, minor=1035)
     while True:
         _beacon_callback(fake_packet)
-        time.sleep(0.25)
+        time.sleep(1)
 
 
-def _beacon_callback(packet):
-    print(packet)
-
-    # When queue is full broadcasts should be ignored
-    # this can happen because Tilt broadcasts very frequently, while Pitch must make network calls
-    # to forward Tilt status info on and this can cause Pitch to fall behind
-    if pitch_q.full():
-        return
-
+def _beacon_callback(packet: BeaconPacket):
     uuid = packet.uuid
     color = uuid_to_colors.get(uuid)
     if color:
         # iBeacon packets have major/minor attributes with data
         # major = degrees in F (int)
         # minor = gravity (int) - needs to be converted to float (e.g. 1035 -> 1.035)
-        tilt_status = TiltStatus(color, packet.major, _get_decimal_gravity(packet.minor), config)
+        temp_f = packet.major
+        gravity = _get_decimal_gravity(packet.minor)
+        tilt_status = TiltStatus(color, temp_f, gravity, config)
         if not tilt_status.temp_valid:
             print("Ignoring broadcast due to invalid temperature: {}F".format(tilt_status.temp_fahrenheit))
         elif not tilt_status.gravity_valid:
             print("Ignoring broadcast due to invalid gravity: " + str(tilt_status.gravity))
+        elif pitch_q.full():
+            print(f"Queue is full, skipping broadcast ({pitch_q.unfinished_tasks}/{pitch_q.maxsize})")
+            return
         else:
             pitch_q.put_nowait(tilt_status)
 
@@ -240,6 +234,5 @@ def _bleak_detection_callback(_, advertisement_data):
     # Extract major (bytes 18-19) and minor (bytes 20-21)
     major = int.from_bytes(ib[18:20], byteorder='big')
     minor = int.from_bytes(ib[20:22], byteorder='big')
-    packet = argparse.Namespace(uuid=uuid_str, major=major, minor=minor)
-    print('hi')
+    packet =  BeaconPacket(uuid=uuid_str, major=major, minor=minor)
     _beacon_callback(packet)
