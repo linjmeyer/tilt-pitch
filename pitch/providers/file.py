@@ -2,6 +2,7 @@ from ..models import TiltStatus
 from ..abstractions import CloudProviderBase
 from ..configuration import PitchConfig
 from interface import implements
+from pathlib import Path
 import logging
 import logging.handlers
 
@@ -17,8 +18,8 @@ class FileCloudProvider(implements(CloudProviderBase)):
         return self.str_name
 
     def start(self):
-        maxBytes = self.config.log_file_max_mb * 1024 * 1024
-        handler = logging.handlers.RotatingFileHandler(self.config.log_file_path, maxBytes=maxBytes)
+        max_bytes = self.config.log_file_max_mb * 1024 * 1024
+        handler = logging.handlers.RotatingFileHandler(self.config.log_file_path, maxBytes=max_bytes)
         self.logger.addHandler(handler)
 
     def update(self, tilt_status: TiltStatus):

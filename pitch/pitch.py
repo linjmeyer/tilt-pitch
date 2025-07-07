@@ -4,12 +4,14 @@ import threading
 import time
 import queue
 import logging
-from pyfiglet import Figlet
 import asyncio
 from .models import TiltStatus
 from .providers import *
 from .configuration import PitchConfig
 from .rate_limiter import RateLimitedException
+from pyfiglet import Figlet
+from bleak import BleakScanner
+import uuid as _uuid
 
 #############################################
 # Statics
@@ -114,11 +116,13 @@ def _start_beacon_simulation():
         'minor': 1035
     })
     while True:
-        _beacon_callback(None, None, fake_packet, dict())
+        _beacon_callback(fake_packet)
         time.sleep(0.25)
 
 
-def _beacon_callback(bt_addr, rssi, packet, additional_info):
+def _beacon_callback(packet):
+    print(packet)
+
     # When queue is full broadcasts should be ignored
     # this can happen because Tilt broadcasts very frequently, while Pitch must make network calls
     # to forward Tilt status info on and this can cause Pitch to fall behind
@@ -138,7 +142,6 @@ def _beacon_callback(bt_addr, rssi, packet, additional_info):
             print("Ignoring broadcast due to invalid gravity: " + str(tilt_status.gravity))
         else:
             pitch_q.put_nowait(tilt_status)
-
 
 def _handle_pitch_queue(enabled_providers: list, console_log: bool):
     if config.queue_empty_sleep_seconds > 0 and pitch_q.empty():
@@ -202,9 +205,14 @@ async def _bleak_scanner_loop(stop_event):
     """
     Asynchronous scanning loop running BleakScanner.
     """
-    from bleak import BleakScanner
-    scanner = BleakScanner()
-    scanner.register_detection_callback(_bleak_detection_callback)
+    # Create scanner with detection callback (Bleak >=0.20 API)
+    try:
+        # Pass callback to constructor for newer Bleak versions
+        scanner = BleakScanner(detection_callback=_bleak_detection_callback)
+    except TypeError:
+        # Fallback for older Bleak versions supporting register_detection_callback
+        scanner = BleakScanner()
+        scanner.register_detection_callback(_bleak_detection_callback)
     await scanner.start()
     print("...started: Tilt scanner")
     try:
@@ -213,7 +221,8 @@ async def _bleak_scanner_loop(stop_event):
     finally:
         await scanner.stop()
 
-def _bleak_detection_callback(device, advertisement_data):
+
+def _bleak_detection_callback(_, advertisement_data):
     """
     Detection callback for BleakScanner.
     Parses iBeacon manufacturer data and forwards to _beacon_callback.
@@ -229,10 +238,10 @@ def _bleak_detection_callback(device, advertisement_data):
     if ib[0] != 0x02 or ib[1] != 0x15:
         return
     # Extract UUID from bytes 2-17
-    import uuid as _uuid
     uuid_str = str(_uuid.UUID(bytes=bytes(ib[2:18])))
     # Extract major (bytes 18-19) and minor (bytes 20-21)
     major = int.from_bytes(ib[18:20], byteorder='big')
     minor = int.from_bytes(ib[20:22], byteorder='big')
     packet = argparse.Namespace(uuid=uuid_str, major=major, minor=minor)
-    _beacon_callback(device.address, device.rssi, packet, {})
+    print('hi')
+    _beacon_callback(packet)
