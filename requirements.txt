@@ -1,8 +1,8 @@
 prometheus_client==0.22.1
 jsonpickle==4.1.1
 python-interface==1.6.1
-pyfiglet<1
-influxdb==1.49.0
-influxdb-client[ciso]==1.49.0
+pyfiglet~=1.0.0
 bleak==1.0.1
 azure-iot-device==3.0.0b2
+requests==2.32.4
+prometheus_client~=0.22.1

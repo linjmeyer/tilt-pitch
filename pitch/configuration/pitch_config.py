@@ -23,19 +23,6 @@ class PitchConfig:
         # Prometheus
         self.prometheus_enabled = True
         self.prometheus_port = 8000
-        # InfluxDB
-        self.influxdb_hostname = None
-        self.influxdb_database = None
-        self.influxdb_port = None
-        self.influxdb_username = None
-        self.influxdb_password = None
-        self.influxdb_batch_size = 10
-        self.influxdb_timeout_seconds = 5
-        # InfluxDB2
-        self.influxdb2_url = None
-        self.influxdb2_org = None
-        self.influxdb2_token = None
-        self.influxdb2_bucket = None
         # Brewfather
         self.brewfather_custom_stream_url = None
         self.brewfather_custom_stream_temp_unit = "F"

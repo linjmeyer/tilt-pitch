@@ -2,7 +2,7 @@
 
 ![](beer-icon.png "Beer Icon")
 
-Pitch is an unofficial replacement for Tilt Hydrometer mobile apps and TiltPi software.  Tilt hardware is required.  It is designed to be easy to use and integrated with other tools like Promethues and InfluxDB for metrics, or any generic third party source using webhooks.
+Pitch is an unofficial replacement for Tilt Hydrometer mobile apps and TiltPi software.  Tilt hardware is required.  It is designed to be easy to use and integrated with other tools like Promethues for metrics, or any generic third party source using webhooks.
 
 ![](misc/grafana_example_dashboard.png "Grafana Example Dashboard")
 
@@ -18,7 +18,6 @@ The following features are implemented, planned, or will be investigated in the 
 * [x] Calibrate Tilt readings with known good values
 * [x] Prometheus Metrics
 * [x] Tilt status log file (JSON)
-* [X] InfluxDB 1.0 and 2.0 Metrics
 * [X] Multiple logging and metric sources simultaneously
 * [X] Webhooks for supporting generic integrations (similar to Tilt's Cloud Logging feature)
 * [X] Gravity, original gravity, ABV, temperature and apparent attenuation
@@ -38,51 +37,40 @@ Pitch can be run using: `python3 -m pitch`
 
 Custom configurations can be used by creating a file `pitch.json` in the working directory you are running Pitch from.
 
-| Option                       | Purpose                      | Default               | Example               |
-| ---------------------------- | ---------------------------- | --------------------- | --------------------- |
-| `queue_size` (int) | Max queue size for all Tilt event broadcasts.  Events are removed from the queue once all enabled providers have handled the event.  New events are dropped when the queue is maxed.  | `3` | [Example config](examples/queue/pitch.json) |
-| `queue_empty_sleep_seconds` (int) | Time in seconds Pitch will sleep when the queue reaches 0. The higher the value the less CPU time Pitch uses.  Can be 0 or negative (this disables sleep and Pitch will always run). | `1` | [Example config](examples/queue/pitch.json) |
-| `temp_range_min` (int) | Minimum temperature (Fahrenheit) for Pitch to consider a Tilt broadcast to be valid. | `32` | No example yet (PRs welcome!) |
-| `temp_range_max` (int) | Maximum temperature (Fahrenheit) for Pitch to consider a Tilt broadcast to be valid. | `212` | No example yet (PRs welcome!) |
-| `gravity_range_min` (int) | Minimum gravity for Pitch to consider a Tilt broadcast to be valid. | `0.7` | No example yet (PRs welcome!) |
-| `gravity_range_max` (int) | Maximum gravity for Pitch to consider a Tilt broadcast to be valid. | `1.4` | No example yet (PRs welcome!) |
-| `webhook_urls` (array) | Adds webhook URLs for Tilt status updates | None/empty | [Example config](examples/webhook/pitch.json) |
-| `webhook_limit_rate` (int) | Number of webhooks to fire for the limit period (per URL) | 1 | [Example config](examples/webhook/pitch.json) |
-| `webhook_limit_period` (int) | Period for rate limiting (in seconds) | 1 | [Example config](examples/webhook/pitch.json) |
-| `log_file_path` (str) | Path to file for JSON event logging | `pitch_log.json` | No example yet (PRs welcome!) |
-| `log_file_max_mb` (int) | Max JSON log file size in megabytes | `10` | No example yet (PRs welcome!) |
-| `prometheus_enabled` (bool) | Enable/Disable Prometheus metrics | `true` | No example yet (PRs welcome!) |
-| `prometheus_port` (int) | Port number for Prometheus Metrics | `8000` | No example yet (PRs welcome!) |
-| `influxdb_hostname` (str) | Hostname for InfluxDB database | None/empty | No example yet (PRs welcome!) |
-| `influxdb_port` (int) | Port for InfluxDB database | None/empty | No example yet (PRs welcome!) |
-| `influxdb_database` (str) | Name of InfluxDB database | None/empty | No example yet (PRs welcome!) |
-| `influxdb_username` (str) | Username for InfluxDB | None/empty | No example yet (PRs welcome!) |
-| `influxdb_password` (str) | Password for InfluxDB | None/empty | No example yet (PRs welcome!) |
-| `influxdb_batch_size` (int) | Number of events to batch.  Data is not saved to InfluxDB until this threshold is met | `10` | No example yet (PRs welcome!) |
-| `influxdb2_url` (str) | URL of InfluxDB 2.0 database | None/empty | `http://localhost:8086` |
-| `influxdb2_token` (str) | Token for writing to InfluxDB 2.0 | None/empty | a base64 encoded string |
-| `influxdb2_org` (str) | Org for InfluxDB 2.0 database | None/empty | `org_name` |
-| `influxdb2_bucket` (str) | Bucket to write data to in InfluxDB 2.0 | None/empty | `bucket_name`
-| `influxdb_timeout_seconds` (int) | Timeout of InfluxDB reads/writes | `5` | No example yet (PRs welcome!) |
-| `brewfather_custom_stream_url` (str) | URL of Brewfather Custom Stream | None/empty | No example yet (PRs welcome!) |
-| `grainfather_custom_stream_urls` (dict) | Dict of color (key) and URLs (value) | None/empty | [Example config](examples/grainfather/pitch.json) |
-| `grainfather_temp_unit` (str) | Temperature unit `F` or `C` for Grainfather | `F` |  [Example config](examples/grainfather/pitch.json) |
-| `brewersfriend_api_key` (str) | API Key for Brewer's Friend | None/empty | No example yet (PRs welcome!) |
-| `taplistio_url` (str) | URL of Taplist.io Tilt reporting webhook | None/empty | No example |
-| `azure_iot_hub_connectionstring` (str) | Azure IoT Hub Device Connection String | None/empty | [Example config](examples/azure_iot/readme.md) |
-| `azure_iot_hub_limit_rate` (int) | Rate limit according to selected IoT Hub tier. | 8000 | [Example config](examples/azure_iot/pitch.json) |
-| `azure_iot_hub_limit_period` (int) | Period during which to observe rate limit, defaults to one day. | 86400 | [Example config](examples/azure_iot/pitch.json) |
-| `{color}_name` (str) | Name of your brew, where {color} is the color of the Tilt (purple, red, etc) | Color (e.g. purple, red, etc) | No example yet (PRs welcome!) |
-| `{color}_original_gravity` (float) | Original gravity of the beer, where {color} is the color of the Tilt (purple, red, etc) | None/empty | No example yet (PRs welcome!) |
-| `{color}_temp_offset` (int) | Temperature offset to calibrate Tilt temperatures with a secondary reading [See Calibration](#Calibration) | 0 | No example yet (PRs welcome!) |
-| `{color}_gravity_offset` (float) | Gravity offset to calibrate Tilt temperatures with a secondary reading [See Calibration](#Calibration)  | 0 | No example yet (PRs welcome!) |
+| Option                                  | Purpose                                                                                                                                                                              | Default                       | Example                                           |
+|-----------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------|---------------------------------------------------|
+| `queue_size` (int)                      | Max queue size for all Tilt event broadcasts.  Events are removed from the queue once all enabled providers have handled the event.  New events are dropped when the queue is maxed. | `3`                           | [Example config](examples/queue/pitch.json)       |
+| `queue_empty_sleep_seconds` (int)       | Time in seconds Pitch will sleep when the queue reaches 0. The higher the value the less CPU time Pitch uses.  Can be 0 or negative (this disables sleep and Pitch will always run). | `1`                           | [Example config](examples/queue/pitch.json)       |
+| `temp_range_min` (int)                  | Minimum temperature (Fahrenheit) for Pitch to consider a Tilt broadcast to be valid.                                                                                                 | `32`                          | No example yet (PRs welcome!)                     |
+| `temp_range_max` (int)                  | Maximum temperature (Fahrenheit) for Pitch to consider a Tilt broadcast to be valid.                                                                                                 | `212`                         | No example yet (PRs welcome!)                     |
+| `gravity_range_min` (int)               | Minimum gravity for Pitch to consider a Tilt broadcast to be valid.                                                                                                                  | `0.7`                         | No example yet (PRs welcome!)                     |
+| `gravity_range_max` (int)               | Maximum gravity for Pitch to consider a Tilt broadcast to be valid.                                                                                                                  | `1.4`                         | No example yet (PRs welcome!)                     |
+| `webhook_urls` (array)                  | Adds webhook URLs for Tilt status updates                                                                                                                                            | None/empty                    | [Example config](examples/webhook/pitch.json)     |
+| `webhook_limit_rate` (int)              | Number of webhooks to fire for the limit period (per URL)                                                                                                                            | 1                             | [Example config](examples/webhook/pitch.json)     |
+| `webhook_limit_period` (int)            | Period for rate limiting (in seconds)                                                                                                                                                | 1                             | [Example config](examples/webhook/pitch.json)     |
+| `log_file_path` (str)                   | Path to file for JSON event logging                                                                                                                                                  | `pitch_log.json`              | No example yet (PRs welcome!)                     |
+| `log_file_max_mb` (int)                 | Max JSON log file size in megabytes                                                                                                                                                  | `10`                          | No example yet (PRs welcome!)                     |
+| `prometheus_enabled` (bool)             | Enable/Disable Prometheus metrics                                                                                                                                                    | `true`                        | No example yet (PRs welcome!)                     |
+| `prometheus_port` (int)                 | Port number for Prometheus Metrics                                                                                                                                                   | `8000`                        | No example yet (PRs welcome!)                     |
+| `brewfather_custom_stream_url` (str)    | URL of Brewfather Custom Stream                                                                                                                                                      | None/empty                    | No example yet (PRs welcome!)                     |
+| `grainfather_custom_stream_urls` (dict) | Dict of color (key) and URLs (value)                                                                                                                                                 | None/empty                    | [Example config](examples/grainfather/pitch.json) |
+| `grainfather_temp_unit` (str)           | Temperature unit `F` or `C` for Grainfather                                                                                                                                          | `F`                           | [Example config](examples/grainfather/pitch.json) |
+| `brewersfriend_api_key` (str)           | API Key for Brewer's Friend                                                                                                                                                          | None/empty                    | No example yet (PRs welcome!)                     |
+| `taplistio_url` (str)                   | URL of Taplist.io Tilt reporting webhook                                                                                                                                             | None/empty                    | No example                                        |
+| `azure_iot_hub_connectionstring` (str)  | Azure IoT Hub Device Connection String                                                                                                                                               | None/empty                    | [Example config](examples/azure_iot/readme.md)    |
+| `azure_iot_hub_limit_rate` (int)        | Rate limit according to selected IoT Hub tier.                                                                                                                                       | 8000                          | [Example config](examples/azure_iot/pitch.json)   |
+| `azure_iot_hub_limit_period` (int)      | Period during which to observe rate limit, defaults to one day.                                                                                                                      | 86400                         | [Example config](examples/azure_iot/pitch.json)   |
+| `{color}_name` (str)                    | Name of your brew, where {color} is the color of the Tilt (purple, red, etc)                                                                                                         | Color (e.g. purple, red, etc) | No example yet (PRs welcome!)                     |
+| `{color}_original_gravity` (float)      | Original gravity of the beer, where {color} is the color of the Tilt (purple, red, etc)                                                                                              | None/empty                    | No example yet (PRs welcome!)                     |
+| `{color}_temp_offset` (int)             | Temperature offset to calibrate Tilt temperatures with a secondary reading [See Calibration](#Calibration)                                                                           | 0                             | No example yet (PRs welcome!)                     |
+| `{color}_gravity_offset` (float)        | Gravity offset to calibrate Tilt temperatures with a secondary reading [See Calibration](#Calibration)                                                                               | 0                             | No example yet (PRs welcome!)                     |
 
 ## Rate Limiting and Batching
 
 A single Tilt can emit several events per second.  To avoid overloading integrations with data events are queued with a max queue size set via the `queue_size`
 configuration parameter.  If new events are broadcast from a Tilt and the queue is full, they are ignored.  Events are removed from the queue once all enabled
-providers have handled the event.  Additionally some providers may implement their own queueing or rate limiting.  InfluxDB for example waits until a certain
-queue size is met before sending a batch of events, and the Brewfather and Grainfather integrations will only send updates every fifteen minutes.
+providers have handled the event.  Additionally, some providers may implement their own queueing or rate limiting. For example the Brewfather and
+Grainfather integrations will only send updates every fifteen minutes.
 
 Refer to the above configuration and the integration list below for details on how this works for different integrations.
 
@@ -189,46 +177,6 @@ Tilt status broadcast events can be logged to a json file using the config optio
 {"timestamp": "2020-09-11T02:15:36.562158", "name": "Pumpkin Ale", "color": "purple", "temp_fahrenheit": 70, "temp_celsius": 21, "gravity": 0.996, "alcohol_by_volume": 5.63, "apparent_attenuation": 32.32}
 ```
 
-## InfluxDB Metrics
-
-Metrics can be sent to an InfluxDB database.  See [Configuration section](#Configuration) for setting this up.  Pitch does not create the database
-so it must be created before using Pitch.  Tilt events are sent to InfluxDB in batches, data is not sent until the batch size is reached.  The batch size
-does not take color into account, so a batch of 50 purple events works the same as 25 purple and 25 red.
-
-Each beacon event from a Tilt will create a measurement like this:
-
-```json
-{
-    "measurement": "tilt",
-    "tags": {
-        "name": "Pumpkin Ale",
-        "color": "purple"
-    },
-    "fields": {
-        "temp_fahrenheit": 70,
-        "temp_celsius": 21,
-        "gravity": 1.035,
-        "alcohol_by_volume": 5.63,
-        "apparent_attenuation": 32.32
-    }
-}
-```  
-
-and can be queried with something like:
-
-```sql
-SELECT mean("gravity") AS "mean_gravity" FROM "pitch"."autogen"."tilt" WHERE time > :dashboardTime: AND time < :upperDashboardTime: AND "name"='Pumpkin Ale' GROUP BY time(:interval:) FILL(previous)
-```
-
-## InfluxDB 2.0 Metrics
-
-Metrics can be sent to an InfluxDB 2.0 database. See [Configuration section](#Configuration) for details on setting it up.  Pitch does not create the bucket.
-This integration uses the same batching logic, output format, and configuration as the 1.0 integration above.
-
-Shared configuration values:
-- `influxdb_timeout`
-- `influxdb_batch_size`
-
 ## Brewfather
 
 Tilt data can be logged to Brewfather using their Custom Log Stream feature.  See [Configuration section](#Configuration) for setting this up in the Pitch config.  Brewfather
@@ -273,7 +221,6 @@ to configure the IoT hub and create a new device to receive your Tilt's measurem
 
 See the examples directory for:
 
-* InfluxDB Grafana Dashboard
 * Running Pitch as a systemd service
 * pitch.json configuration file
 
