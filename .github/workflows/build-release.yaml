@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         # Use the latest LTS Python version for builds
-        python-version: [3.10]
+        python-version: ['3.10']
 
     steps:
     - uses: actions/checkout@v2
