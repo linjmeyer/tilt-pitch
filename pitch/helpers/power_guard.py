@@ -12,6 +12,7 @@ ES_DISPLAY_REQUIRED = 0x00000002
 # Track the caffeinate process globally
 _caffeinate_process: Optional[subprocess.Popen] = None
 
+
 def prevent_sleep():
     global _caffeinate_process
 
@@ -22,8 +23,9 @@ def prevent_sleep():
         )
     elif system == "Darwin":  # macOS
         if _caffeinate_process is None:
-            _caffeinate_process = subprocess.Popen(["caffeinate"])
+            _caffeinate_process = subprocess.Popen(["caffeinate", "-diu"])
     # Add more OSes as needed
+
 
 def allow_sleep():
     global _caffeinate_process
