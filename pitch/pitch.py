@@ -113,7 +113,7 @@ def _start_beacon_simulation():
     print("...started: Tilt Beacon Simulator")
     temp_f = 71  #
     gravity_sg = 1.055
-    step_temp = 0.05
+    step_temp = -0.05
     step_grav = 0.00005
     uuid = colors_to_uuid['simulated']
     while True:

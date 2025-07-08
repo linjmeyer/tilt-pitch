@@ -14,11 +14,26 @@ class TuiColorState:
         self.times = []
         self.gravity = []
         self.temperature = []
+        # Used to set Y min/max on chart, starts with defaults and adjust if
+        # larger/lower values are seen
+        self.gravity_lower_bound = 0.990
+        self.gravity_upper_bound = 1.099
+        self.temp_lower_bound = 40
+        self.temp_upper_bound = 100
 
     def append(self, tilt_status: TiltStatus):
         self.times.append(datetime.now())
         self.gravity.append(tilt_status.gravity)
         self.temperature.append(tilt_status.temp_fahrenheit)
+        # Adjust min/max Y values for charting
+        if tilt_status.gravity >= self.gravity_upper_bound:
+            self.gravity_upper_bound = tilt_status.gravity + 0.05
+        if tilt_status.gravity <= self.gravity_lower_bound:
+            self.gravity_lower_bound = tilt_status.gravity - 0.05
+        if tilt_status.temp_fahrenheit >= self.temp_upper_bound:
+            self.temp_upper_bound = tilt_status.temp_fahrenheit + 5
+        if tilt_status.temp_fahrenheit <= self.temp_lower_bound:
+            self.temp_lower_bound = tilt_status.temp_fahrenheit - 5
 
 
 class TuiProvider(implements(CloudProviderBase)):
@@ -56,7 +71,6 @@ class TuiProvider(implements(CloudProviderBase)):
         plt.subplot(1)
         plt.date_form("d/m/Y H:M:S")
         plt.title("Gravity")
-        plt.ylim(0.990, 1.099)
 
         for color, cstate in self.data.items():
             if len(cstate.times) < 2:
@@ -65,6 +79,7 @@ class TuiProvider(implements(CloudProviderBase)):
             x_vals = [dt.strftime("%d/%m/%Y %H:%M:%S")
                       for dt in cstate.times]
             plt.plot(x_vals, cstate.gravity, label=f"{color}", color=gravity_color)
+            plt.ylim(cstate.gravity_lower_bound, cstate.gravity_upper_bound)
 
         plt.show()
 
@@ -81,6 +96,7 @@ class TuiProvider(implements(CloudProviderBase)):
                       for dt in cstate.times]
             _, temp_color = TuiProvider.get_colors_for(color)
             plt.plot(x_vals, cstate.temperature, label=f"{color}", color=temp_color)
+            plt.ylim(cstate.temp_lower_bound, cstate.temp_upper_bound)
 
         plt.show()
 
