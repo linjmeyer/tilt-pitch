@@ -1,11 +1,10 @@
-import argparse
 import signal
 import threading
 import time
 import queue
-import logging
+import uuid as _uuid
 import asyncio
-
+from random import randrange
 from .abstractions.beacon_packet import BeaconPacket
 from .models import TiltStatus
 from .providers import *
@@ -14,7 +13,6 @@ from .providers.TuiProvider import TuiProvider
 from .rate_limiter import RateLimitedException
 from pyfiglet import Figlet
 from bleak import BleakScanner
-import uuid as _uuid
 
 #############################################
 # Statics
@@ -108,13 +106,25 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
         # BLE scanning thread will be terminated when program exits
         print("...stopped: Tilt Scanner ({})".format(e))
 
+
 def _start_beacon_simulation():
     """Simulates Beacon scanning with fake events. Useful when testing or developing
     without a beacon, or on a platform with no Bluetooth support"""
     print("...started: Tilt Beacon Simulator")
-    fake_packet = BeaconPacket(uuid= colors_to_uuid['simulated'], major=70, minor=1035)
+    temp_f = 71  #
+    gravity_sg = 1.055
+    step_temp = 0.05
+    step_grav = 0.00005
+    uuid = colors_to_uuid['simulated']
     while True:
+        fake_packet = BeaconPacket(
+            uuid=uuid,
+            major=int(temp_f),  # e.g. 67
+            minor=int(gravity_sg * 1000),  # e.g. 1034
+        )
         _beacon_callback(fake_packet)
+        temp_f -= step_temp
+        gravity_sg -= step_grav
         time.sleep(1)
 
 

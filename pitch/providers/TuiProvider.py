@@ -1,12 +1,12 @@
-﻿import dataclasses
-import time
+﻿import time
 import plotext as plt
-import random
+from datetime import datetime
 from interface import implements
 from typing import Dict
 from pitch.abstractions import CloudProviderBase
 from pitch.configuration import PitchConfig
 from pitch.models import TiltStatus
+
 
 class TuiColorState:
     def __init__(self, color):
@@ -16,7 +16,7 @@ class TuiColorState:
         self.temperature = []
 
     def append(self, tilt_status: TiltStatus):
-        self.times.append(time.time())
+        self.times.append(datetime.now())
         self.gravity.append(tilt_status.gravity)
         self.temperature.append(tilt_status.temp_fahrenheit)
 
@@ -47,32 +47,37 @@ class TuiProvider(implements(CloudProviderBase)):
             return
         self._last_plot_time = now
 
+        plt.date_form("%d/%m/%Y")
         plt.clf()
         plt.theme('clear')
         plt.subplots(2, 1)
         # SG Chart
         plt.subplot(1)
+        plt.date_form("d/m/Y H:M:S")
         plt.title("Specific Gravity by Tilt Color")
-        plt.ylim(0.990, 1.120)
+        plt.ylim(0.990, 1.099)
 
         for color, cstate in self.data.items():
             if len(cstate.times) < 2:
                 continue
             gravity_color, _ = TuiProvider.get_colors_for(color)
-            x_vals = [t - cstate.times[0] for t in cstate.times]
+            x_vals = [dt.strftime("%d/%m/%Y %H:%M:%S")
+                      for dt in cstate.times]
             plt.plot(x_vals, cstate.gravity, label=f"{color}", color=gravity_color)
 
         plt.show()
 
         # Temp Chart
         plt.subplot(2)
+        plt.date_form("d/m/Y H:M:S")
         plt.title("Temperature by Tilt Color")
         plt.ylim(40, 100)
 
         for color, cstate in self.data.items():
             if len(cstate.times) < 2:
                 continue
-            x_vals = [t - cstate.times[0] for t in cstate.times]
+            x_vals = [dt.strftime("%d/%m/%Y %H:%M:%S")
+                      for dt in cstate.times]
             _, temp_color = TuiProvider.get_colors_for(color)
             plt.plot(x_vals, cstate.temperature, label=f"{color}", color=temp_color)
 
