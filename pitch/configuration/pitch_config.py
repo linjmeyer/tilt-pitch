@@ -9,7 +9,7 @@ class PitchConfig:
         self.queue_size = 3
         self.queue_empty_sleep_seconds = 1
         # Broadcast Data ranges
-        self.temp_range_min = 32
+        self.temp_range_min = 0
         self.temp_range_max = 212
         self.gravity_range_min = 0.7
         self.gravity_range_max = 1.4

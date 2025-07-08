@@ -23,8 +23,8 @@ class TiltStatus(JsonSerialize):
         self.degrees_plato = TiltStatus.get_degrees_plato(self.gravity)
         self.alcohol_by_volume = TiltStatus.get_alcohol_by_volume(self.original_gravity, self.gravity)
         self.apparent_attenuation = TiltStatus.get_apparent_attenuation(self.original_gravity, self.gravity)
-        self.temp_valid = (config.temp_range_min < self.temp_fahrenheit and self.temp_fahrenheit < config.temp_range_max)
-        self.gravity_valid = (config.gravity_range_min < self.gravity and self.gravity < config.gravity_range_max)
+        self.temp_valid = (config.temp_range_min < self.temp_fahrenheit < config.temp_range_max)
+        self.gravity_valid = (config.gravity_range_min < self.gravity < config.gravity_range_max)
 
     @staticmethod
     def get_celsius(temp_fahrenheit):

@@ -32,7 +32,7 @@ uuid_to_colors = {
 colors_to_uuid = dict((v, k) for k, v in uuid_to_colors.items())
 
 # Load config from file, with defaults, and args
-config = PitchConfig.load()
+config: PitchConfig = PitchConfig.load()
 
 normal_providers = [
         PrometheusCloudProvider(config),
@@ -87,7 +87,6 @@ def _start_scanner(enabled_providers: list, timeout_seconds: int, simulate_beaco
         # Trigger stop_event on termination signal
         signal.signal(signal.SIGTERM, lambda signalNumber, frame: stop_event.set())
         threading.Thread(target=_bleak_scanner_thread, args=(stop_event,), daemon=True).start()
-        
 
     print("Ready!  Listening for beacons")
     start_time = time.time()
@@ -118,6 +117,12 @@ def _start_beacon_simulation():
     step_grav = 0.00005
     uuid = colors_to_uuid['simulated']
     while True:
+        # If we are at the max ranges, swap the step to go in the opposite direction
+        # this gives us some nice yo-yo-ing in the graph for effect
+        if temp_f <= config.temp_range_min or temp_f >= config.temp_range_max:
+            step_temp = step_temp * -1
+        if gravity_sg <= config.gravity_range_min or gravity_sg >= config.gravity_range_max:
+            step_grav = step_grav * -1
         fake_packet = BeaconPacket(
             uuid=uuid,
             major=int(temp_f),  # e.g. 67
@@ -168,9 +173,12 @@ def _handle_pitch_queue(enabled_providers: list, console_log: bool):
                 print("Updated provider {} for color {} took {:.3f} seconds".format(provider, tilt_status.color, time_spent))
         except RateLimitedException:
             # nothing to worry about, just called this too many times (locally)
-            print("Skipping update due to rate limiting for provider {} for color {}".format(provider, tilt_status.color))
+            if console_log:
+                print("Skipping update due to rate limiting for provider {} for color {}".format(provider, tilt_status.color))
         except Exception as e:
-            # todo: better logging of errors
+            if console_log:
+                print("Skipping update due to rate limiting for provider {} for color {}".format(provider,
+                                                                                                 tilt_status.color))
             print(e)
     # Log it to console/stdout
     if console_log:
