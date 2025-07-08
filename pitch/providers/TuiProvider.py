@@ -54,7 +54,7 @@ class TuiProvider(implements(CloudProviderBase)):
         # SG Chart
         plt.subplot(1)
         plt.date_form("d/m/Y H:M:S")
-        plt.title("Specific Gravity by Tilt Color")
+        plt.title("Gravity")
         plt.ylim(0.990, 1.099)
 
         for color, cstate in self.data.items():
@@ -70,7 +70,7 @@ class TuiProvider(implements(CloudProviderBase)):
         # Temp Chart
         plt.subplot(2)
         plt.date_form("d/m/Y H:M:S")
-        plt.title("Temperature by Tilt Color")
+        plt.title("Temperature")
         plt.ylim(40, 100)
 
         for color, cstate in self.data.items():
@@ -102,7 +102,7 @@ class TuiProvider(implements(CloudProviderBase)):
             # https://github.com/piccolomo/plotext/blob/master/readme/aspect.md#colors
             "purple": (91, 93),
             "yellow": (220, 226),
-            "simulated": ("green", "green+"),
+            "simulated": ("green", 115),
         }
 
         return color_map.get(color, ("#444444", "#AAAAAA"))  # fallback: gray

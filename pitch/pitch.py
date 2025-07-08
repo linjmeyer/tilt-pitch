@@ -125,7 +125,7 @@ def _start_beacon_simulation():
         _beacon_callback(fake_packet)
         temp_f -= step_temp
         gravity_sg -= step_grav
-        time.sleep(1)
+        time.sleep(0.5)
 
 
 def _beacon_callback(packet: BeaconPacket):
