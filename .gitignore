@@ -6,6 +6,9 @@ pitch.json
 .vscode/
 .DS_Store
 
+# SQL Lite
+*.db
+
 # Keep pitch.json files in example dir
 !examples/**/pitch.json
 

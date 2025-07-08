@@ -20,6 +20,7 @@ class TuiColorState:
         self.gravity.append(tilt_status.gravity)
         self.temperature.append(tilt_status.temp_fahrenheit)
 
+
 class TuiProvider(implements(CloudProviderBase)):
 
     def __init__(self, config: PitchConfig):
