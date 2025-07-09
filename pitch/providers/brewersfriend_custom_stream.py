@@ -17,12 +17,11 @@ from ..models import TiltStatus
 from ..abstractions import CloudProviderBase
 from ..configuration import PitchConfig
 from ..rate_limiter import DeviceRateLimiter
-from interface import implements
 import requests
 import json
 
 
-class BrewersFriendCustomStreamCloudProvider(implements(CloudProviderBase)):
+class BrewersFriendCustomStreamCloudProvider(CloudProviderBase):
 
     def __init__(self, config: PitchConfig):
         self.api_key = config.brewersfriend_api_key

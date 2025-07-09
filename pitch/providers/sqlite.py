@@ -1,14 +1,13 @@
 import sqlite3
 import threading
 import time
-from interface import implements
 from ..abstractions import CloudProviderBase
 from ..models import TiltStatus
 from ..configuration import PitchConfig
 from ..rate_limiter import DeviceRateLimiter
 
 
-class SqliteCloudProvider(implements(CloudProviderBase)):
+class SqliteCloudProvider(CloudProviderBase):
     """
     Persist TiltStatus updates into a local SQLite database (enabled by default).
     """

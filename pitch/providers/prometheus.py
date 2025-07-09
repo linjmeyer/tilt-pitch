@@ -1,7 +1,6 @@
 from ..models import TiltStatus
 from ..abstractions import CloudProviderBase
 from ..configuration import PitchConfig
-from interface import implements
 from prometheus_client import Counter, Gauge, start_http_server
 
 counter_beacons_received = Counter('pitch_beacons_received', 'Number of beacons received', ['color', 'name'])
@@ -12,7 +11,7 @@ gauge_alcohol_by_volume = Gauge('pitch_alcohol_by_volume', 'ABV of the beer', ['
 gauge_aa = Gauge('pitch_apparent_attenuation', 'Apparent attenuation of the beer', ['color', 'name'])
 
 
-class PrometheusCloudProvider(implements(CloudProviderBase)):
+class PrometheusCloudProvider(CloudProviderBase):
 
     def __init__(self, config: PitchConfig):
         self.is_enabled = config.prometheus_enabled

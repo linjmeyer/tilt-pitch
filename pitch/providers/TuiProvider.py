@@ -1,7 +1,6 @@
 ﻿import time
 import plotext as plt
 from datetime import datetime
-from interface import implements
 from typing import Dict
 from pitch.abstractions import CloudProviderBase
 from pitch.configuration import PitchConfig
@@ -36,7 +35,7 @@ class TuiColorState:
             self.temp_lower_bound = tilt_status.temp_fahrenheit - 5
 
 
-class TuiProvider(implements(CloudProviderBase)):
+class TuiProvider(CloudProviderBase):
 
     def __init__(self, config: PitchConfig):
         self.str_name = "TUI"

@@ -13,7 +13,6 @@ authors = [ { name = "Lin Meyer", email = "lin@linmeyer.net" } ]
 dependencies = [
   "prometheus_client==0.22.1",
   "jsonpickle==4.1.1",
-  "python-interface==1.6.1",
   "pyfiglet<1",
   "bleak==1.0.1",
   "requests==2.32.4",
