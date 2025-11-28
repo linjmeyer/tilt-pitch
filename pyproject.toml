@@ -1,10 +1,9 @@
 [build-system]
-requires = ["setuptools>=61.0.0", "wheel"]
+requires = ["setuptools>=61.0.0", "wheel", "setuptools-scm>=8.0.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "tilt-pitch"
-version = "0.0.1"
 description = "Simple replacement for the Tilt Hydrometer mobile apps and TiltPi with lots of features"
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.7"
@@ -28,5 +27,9 @@ classifiers = [
 ]
 urls = { "Homepage" = "https://github.com/linjmeyer/tilt-pitch/" }
 
+dynamic = ["version"]
+
 [[project.packages]]
 include = ["pitch", "pitch.*"]
+
+[tool.setuptools_scm]
