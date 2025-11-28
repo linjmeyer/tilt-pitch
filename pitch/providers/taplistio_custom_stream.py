@@ -2,12 +2,11 @@ from ..models import TiltStatus
 from ..abstractions import CloudProviderBase
 from ..configuration import PitchConfig
 from ..rate_limiter import DeviceRateLimiter
-from interface import implements
 import requests
 import json
 
 
-class TaplistIOCloudProvider(implements(CloudProviderBase)):
+class TaplistIOCloudProvider(CloudProviderBase):
     def __init__(self, config: PitchConfig):
         self.url = config.taplistio_url
         self.str_name = "Taplist.io ({})".format(self.url)

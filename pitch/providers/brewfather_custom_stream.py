@@ -19,12 +19,11 @@ from ..models import TiltStatus
 from ..abstractions import CloudProviderBase
 from ..configuration import PitchConfig
 from ..rate_limiter import DeviceRateLimiter
-from interface import implements
 import requests
 import json
 
 
-class BrewfatherCustomStreamCloudProvider(implements(CloudProviderBase)):
+class BrewfatherCustomStreamCloudProvider(CloudProviderBase):
 
     def __init__(self, config: PitchConfig):
         self.url = config.brewfather_custom_stream_url

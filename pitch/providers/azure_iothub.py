@@ -1,15 +1,12 @@
 from ..models import TiltStatus
 from ..abstractions import CloudProviderBase
-from interface import implements
 from ..configuration import PitchConfig
 from ..rate_limiter import DeviceRateLimiter
-import requests
 from azure.iot.device import IoTHubSession, MQTTError, MQTTConnectionFailedError
-import json
 import asyncio
 
 
-class AzureIoTHubCloudProvider(implements(CloudProviderBase)):
+class AzureIoTHubCloudProvider(CloudProviderBase):
 
     def __init__(self, config: PitchConfig):
         self.config = config

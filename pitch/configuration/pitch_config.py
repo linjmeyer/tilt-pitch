@@ -9,7 +9,7 @@ class PitchConfig:
         self.queue_size = 3
         self.queue_empty_sleep_seconds = 1
         # Broadcast Data ranges
-        self.temp_range_min = 32
+        self.temp_range_min = 0
         self.temp_range_max = 212
         self.gravity_range_min = 0.7
         self.gravity_range_max = 1.4
@@ -23,19 +23,6 @@ class PitchConfig:
         # Prometheus
         self.prometheus_enabled = True
         self.prometheus_port = 8000
-        # InfluxDB
-        self.influxdb_hostname = None
-        self.influxdb_database = None
-        self.influxdb_port = None
-        self.influxdb_username = None
-        self.influxdb_password = None
-        self.influxdb_batch_size = 10
-        self.influxdb_timeout_seconds = 5
-        # InfluxDB2
-        self.influxdb2_url = None
-        self.influxdb2_org = None
-        self.influxdb2_token = None
-        self.influxdb2_bucket = None
         # Brewfather
         self.brewfather_custom_stream_url = None
         self.brewfather_custom_stream_temp_unit = "F"

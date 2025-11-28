@@ -1,7 +1,7 @@
-from interface import Interface
 from ..models import TiltStatus
 
-class CloudProviderBase(Interface):
+
+class CloudProviderBase:
 
     def start(self):
         pass

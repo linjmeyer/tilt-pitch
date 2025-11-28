@@ -1,9 +1,8 @@
 from ..models import TiltStatus
 from ..abstractions import CloudProviderBase
-from interface import implements
 
 
-class CalibrationCloudProvider(implements(CloudProviderBase)):
+class CalibrationCloudProvider(CloudProviderBase):
 
     def __init__(self, color: str, actual_temp: int = 0, actual_gravity: float = 0):
         self.color = color.lower()

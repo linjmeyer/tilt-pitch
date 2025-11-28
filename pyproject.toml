@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel", "setuptools-scm>=8.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tilt-pitch"
+description = "Simple replacement for the Tilt Hydrometer mobile apps and TiltPi with lots of features"
+readme = { file = "README.md", content-type = "text/markdown" }
+requires-python = ">=3.7"
+license = { text = "GNU General Public License v3 (GPLv3)" }
+authors = [ { name = "Lin Meyer", email = "lin@linmeyer.net" } ]
+dependencies = [
+  "prometheus_client==0.22.1",
+  "jsonpickle==4.1.1",
+  "pyfiglet<1",
+  "bleak==1.0.1",
+  "requests==2.32.4",
+  "azure-iot-device==3.0.0b2",
+  "plotext==5.3.2",
+  "pyobjc-core >=10.2 ; sys_platform == 'darwin'",
+  "pyobjc-framework-CoreBluetooth >=10.2 ; sys_platform == 'darwin'",
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+  "Operating System :: POSIX :: Linux",
+]
+urls = { "Homepage" = "https://github.com/linjmeyer/tilt-pitch/" }
+
+dynamic = ["version"]
+
+[project.scripts]
+pitch = "pitch.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["pitch", "pitch.*"]
+
+[tool.setuptools_scm]

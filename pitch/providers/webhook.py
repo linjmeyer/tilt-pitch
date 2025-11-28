@@ -1,12 +1,11 @@
 from ..rate_limiter import DeviceRateLimiter
 from ..models import TiltStatus
 from ..abstractions import CloudProviderBase
-from interface import implements
 from ..configuration import PitchConfig
 import requests
 
 
-class WebhookCloudProvider(implements(CloudProviderBase)):
+class WebhookCloudProvider(CloudProviderBase):
 
     def __init__(self, url, config: PitchConfig):
         self.url = url

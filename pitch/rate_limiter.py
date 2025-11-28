@@ -1,4 +1,5 @@
 import time
+from typing import Optional
 
 
 class RateLimitedException(Exception):
@@ -25,12 +26,17 @@ class DeviceRateLimiter:
 
 class RateLimiter:
     def __init__(self, rate=1, period=1):
-        self.rate = rate
-        self.period = period
-        self.allowance = rate
-        self.last_check = time.time()
+        self.rate: int = rate
+        self.period: int = period
+        self.allowance: int = rate
+        self.last_check: Optional[float] = None
 
     def approve(self):
+        if self.last_check is None:
+            # first time checking, approve
+            self.last_check = time.time()
+            return
+
         current = time.time()
         time_passed = current - self.last_check
         self.last_check = current
