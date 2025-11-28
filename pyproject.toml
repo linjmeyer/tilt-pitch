@@ -29,7 +29,7 @@ urls = { "Homepage" = "https://github.com/linjmeyer/tilt-pitch/" }
 
 dynamic = ["version"]
 
-[[project.packages]]
+[tool.setuptools.packages.find]
 include = ["pitch", "pitch.*"]
 
 [tool.setuptools_scm]
