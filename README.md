@@ -14,6 +14,9 @@ The Tilt hardware is impressive, but the mobile apps and TiltPi are confusing an
 
 The following features are implemented, planned, or will be investigated in the future:
 
+* [x] GUI with dashboard for tracking Gravity and Temperature
+* [x] Save history to a local database
+* [x] Mac, Windows and Linux support
 * [x] Track multiple Tilts at once
 * [x] Calibrate Tilt readings with known good values
 * [x] Prometheus Metrics
@@ -23,7 +26,6 @@ The following features are implemented, planned, or will be investigated in the 
 * [X] Gravity, original gravity, ABV, temperature and apparent attenuation
 * [X] Custom Beer/brew names (e.g. purple tilt = Pumpkin Ale)
 * [X] Brewing Cloud Services (Brewfather, Brewer's Friend, Grainfather, more can be requested!)
-* [ ] Google Sheets (using any Google Drive)
 
 # Installation
 
@@ -32,6 +34,10 @@ an example of how to do this using apt-get (Ubuntu, Raspberry Pi, etc).
 
 After setting up prereqs install using: `pip3 install tilt-pitch`
 Pitch can be run using: `python3 -m pitch`
+
+## User Interface
+
+By default Pitch only outputs logs to the console. To show the local UI, add the --ui flag: `python3 -m pitch --ui`. The UI will appear after the first beacon is received and processed.  You can also use the `--simulate` flag to see the UI in a demo/simulation mode.
 
 ## Configuration
 
@@ -93,9 +99,9 @@ purple: gravity=1.035, gravity_offset=0.03500000000000014; temp_f=70, temp_offse
 ```
 
 
-## Running without a Tilt or on Mac/Windows
+## Running without a Tilt (Simulation Mode)
 
-If you want to run Tilt on a non-linux system, for development, or without a Tilt you can use the `--simulate-beacons` flag to create fake
+If you want to run Tilt locally for development, testing or without a Tilt you can use the `--simulate-beacons` flag to create fake
 beacon events instead of scanning for Tilt events via Bluetooth.  
 
 `python3 -m pitch --simulate-beacons`
@@ -103,7 +109,6 @@ beacon events instead of scanning for Tilt events via Bluetooth.
 # Integrations
 
 * [Prometheus](#Prometheus-Metrics)
-* [InfluxDb](#InfluxDB-Metrics)
 * [Webhook](#Webhook)
 * [JSON Log File](#JSON-Log-File)
 * [Brewfather](#Brewfather)
