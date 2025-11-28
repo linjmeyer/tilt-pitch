@@ -4,7 +4,7 @@ from .providers import CalibrationCloudProvider
 import argparse
 
 
-def _get_args():
+def _get_args(argv=None):
     # Load config
     parser = argparse.ArgumentParser(description='')
     parser.add_argument('--ui', action='store_true', dest='tui_enabled')
@@ -17,11 +17,11 @@ def _get_args():
     parser.add_argument('--actual-gravity', dest='actual_gravity', action='store', default=0,
                         type=float, help='Measured gravity, for used with calibrate flag')
 
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
-if __name__ == '__main__':
-    args = _get_args()
+def main(argv=None):
+    args = _get_args(argv)
     try:
         prevent_sleep()
         if args.calibrate:
@@ -42,3 +42,6 @@ if __name__ == '__main__':
     finally:
         allow_sleep()
 
+
+if __name__ == '__main__':
+    main()

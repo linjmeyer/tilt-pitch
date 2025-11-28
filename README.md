@@ -33,7 +33,7 @@ Pitch will only work on Linux, with libbluetooth-dev installed.  [See examples/i
 an example of how to do this using apt-get (Ubuntu, Raspberry Pi, etc).  
 
 After setting up prereqs install using: `pip3 install tilt-pitch`
-Pitch can be run using: `python3 -m pitch`
+Pitch can be run using: `pitch` or `python3 -m pitch`
 
 ## User Interface
 

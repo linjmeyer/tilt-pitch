@@ -29,6 +29,9 @@ urls = { "Homepage" = "https://github.com/linjmeyer/tilt-pitch/" }
 
 dynamic = ["version"]
 
+[project.scripts]
+pitch = "pitch.__main__:main"
+
 [tool.setuptools.packages.find]
 include = ["pitch", "pitch.*"]
 
