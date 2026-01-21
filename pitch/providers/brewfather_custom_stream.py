@@ -30,6 +30,7 @@ class BrewfatherCustomStreamCloudProvider(CloudProviderBase):
         self.temp_unit = BrewfatherCustomStreamCloudProvider._get_temp_unit(config)
         self.str_name = "Brewfather ({})".format(self.url)
         self.rate_limiter = DeviceRateLimiter(rate=1, period=(60 * 15))  # 15 minutes
+        self.timeout_seconds = config.http_timeout_seconds
 
     def __str__(self):
         return self.str_name
@@ -41,7 +42,7 @@ class BrewfatherCustomStreamCloudProvider(CloudProviderBase):
         self.rate_limiter.approve(tilt_status.color)
         headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         payload = self._get_payload(tilt_status)
-        result = requests.post(self.url, headers=headers, data=json.dumps(payload))
+        result = requests.post(self.url, headers=headers, data=json.dumps(payload), timeout=self.timeout_seconds)
         result.raise_for_status()
 
     def enabled(self):
@@ -70,4 +71,3 @@ class BrewfatherCustomStreamCloudProvider(CloudProviderBase):
             return temp_unit
 
         raise ValueError("Brewfather temp unit must be F or C")
-

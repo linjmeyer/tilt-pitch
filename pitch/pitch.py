@@ -1,4 +1,5 @@
 import signal
+import datetime
 import threading
 import time
 import queue
@@ -164,6 +165,12 @@ def _handle_pitch_queue(enabled_providers: list, console_log: bool):
         print("Queue is full ({} events), scans will be ignored until the queue is reduced".format(length))
 
     tilt_status = pitch_q.get()
+    if config.queue_item_ttl_seconds and config.queue_item_ttl_seconds > 0:
+        age_seconds = (datetime.datetime.now() - tilt_status.timestamp).total_seconds()
+        if age_seconds > config.queue_item_ttl_seconds:
+            if console_log:
+                print("Removing stale item from queue age={:.0f}s".format(age_seconds))
+            return
     for provider in enabled_providers:
         try:
             start = time.time()

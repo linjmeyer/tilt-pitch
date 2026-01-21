@@ -11,6 +11,7 @@ class TaplistIOCloudProvider(CloudProviderBase):
         self.url = config.taplistio_url
         self.str_name = "Taplist.io ({})".format(self.url)
         self.rate_limiter = DeviceRateLimiter(rate=1, period=(60 * 15))  # 15 minutes
+        self.timeout_seconds = config.http_timeout_seconds
 
     def __str__(self):
         return self.str_name
@@ -25,7 +26,7 @@ class TaplistIOCloudProvider(CloudProviderBase):
             'User-Agent': 'tilt-pitch',
         }
         payload = self._get_payload(tilt_status)
-        result = requests.post(self.url, headers=headers, data=json.dumps(payload))
+        result = requests.post(self.url, headers=headers, data=json.dumps(payload), timeout=self.timeout_seconds)
         result.raise_for_status()
 
     def enabled(self):

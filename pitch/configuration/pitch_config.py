@@ -8,6 +8,7 @@ class PitchConfig:
         # Queue
         self.queue_size = 3
         self.queue_empty_sleep_seconds = 1
+        self.queue_item_ttl_seconds = 60
         # Broadcast Data ranges
         self.temp_range_min = 0
         self.temp_range_max = 212
@@ -20,6 +21,8 @@ class PitchConfig:
         # File Path
         self.log_file_path = 'pitch_log.json'
         self.log_file_max_mb = 10
+        # HTTP
+        self.http_timeout_seconds = 10
         # Prometheus
         self.prometheus_enabled = True
         self.prometheus_port = 8000
@@ -71,4 +74,3 @@ class PitchConfig:
             config.update(additional_config)
 
         return config
-

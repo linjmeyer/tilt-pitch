@@ -30,6 +30,7 @@ class BrewersFriendCustomStreamCloudProvider(CloudProviderBase):
         self.rate_limiter = DeviceRateLimiter(rate=1, period=(60 * 15))  # 15 minutes
         self.headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
         self.temp_unit = BrewersFriendCustomStreamCloudProvider._get_temp_unit(config)
+        self.timeout_seconds = config.http_timeout_seconds
 
     def __str__(self):
         return self.str_name
@@ -40,7 +41,7 @@ class BrewersFriendCustomStreamCloudProvider(CloudProviderBase):
     def update(self, tilt_status: TiltStatus):
         self.rate_limiter.approve(tilt_status.color)
         payload = self._get_payload(tilt_status)
-        result = requests.post(self.url, headers=self.headers, data=json.dumps(payload))
+        result = requests.post(self.url, headers=self.headers, data=json.dumps(payload), timeout=self.timeout_seconds)
         result.raise_for_status()
 
     def enabled(self):
@@ -71,4 +72,3 @@ class BrewersFriendCustomStreamCloudProvider(CloudProviderBase):
             return temp_unit
 
         raise ValueError("Brewer's Friend temp unit must be F or C")
-
